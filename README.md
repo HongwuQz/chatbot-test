@@ -12,6 +12,7 @@ Chatbot UI will be updated over time.
 
 Expect frequent improvements.
 
+
 **Next up:**
 
 - [ ] Delete messages
@@ -21,8 +22,7 @@ Expect frequent improvements.
 **Recent updates:**
 
 - [x] Prompt templates (3/27/23)
-- [x] Regenerate & edit responses (3/25/23)
-- [x] Folders (3/24/23)
+- [x] Regenerate & edit responses (3/25/23):wq
 - [x] Search chat content (3/23/23)
 - [x] Stop message generation (3/22/23)
 - [x] Import/Export chats (3/22/23)
