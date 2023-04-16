@@ -11,9 +11,11 @@ import {
 } from '@tabler/icons-react';
 import { useTranslation } from 'next-i18next';
 import {
+  Dispatch,
   FC,
   KeyboardEvent,
   MutableRefObject,
+  SetStateAction,
   useCallback,
   useEffect,
   useRef,
@@ -22,6 +24,12 @@ import {
 import { PluginSelect } from './PluginSelect';
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
+import useSessionStorage from '@/hooks/useSessionStorage';
+import { message } from 'antd';
+import { OpenAIError } from '@/utils/server';
+import { Balance } from '@/types/user';
+import { useBool } from '@/hooks/useBool';
+import { BASE_BACKEND_URL } from '@/utils/constant';
 
 interface Props {
   messageIsStreaming: boolean;
@@ -29,6 +37,7 @@ interface Props {
   conversationIsEmpty: boolean;
   prompts: Prompt[];
   onSend: (message: Message, plugin: Plugin | null) => void;
+  updateBalance: Dispatch<SetStateAction<Balance>>;
   onRegenerate: () => void;
   stopConversationRef: MutableRefObject<boolean>;
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
@@ -40,6 +49,7 @@ export const ChatInput: FC<Props> = ({
   conversationIsEmpty,
   prompts,
   onSend,
+  updateBalance,
   onRegenerate,
   stopConversationRef,
   textareaRef,
@@ -55,6 +65,12 @@ export const ChatInput: FC<Props> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showPluginSelect, setShowPluginSelect] = useState(false);
   const [plugin, setPlugin] = useState<Plugin | null>(null);
+  const [limited, setLimit] = useState<boolean>(true);
+  const [reloadBalance, onReloadBalance] = useBool()
+
+  // const {  } = useApi(``)
+  
+  const { getSessionItem } = useSessionStorage()
 
   const promptListRef = useRef<HTMLUListElement | null>(null);
 
@@ -80,7 +96,8 @@ export const ChatInput: FC<Props> = ({
     updatePromptListVisibility(value);
   };
 
-  const handleSend = () => {
+  // 该函数内鉴权
+  const handleSend = async () => {
     if (messageIsStreaming) {
       return;
     }
@@ -89,6 +106,47 @@ export const ChatInput: FC<Props> = ({
       alert(t('Please enter a message'));
       return;
     }
+
+    const isLogin = !!getSessionItem("TOKEN")
+    // 游客状态
+    if (!isLogin) {
+      try {
+        const visitorLimitResponse = await fetch(`${process.env.BASE_BACKEND_URL || BASE_BACKEND_URL}/sample/ChatSend`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ content })
+        })
+  
+        // 请求失败
+        if (visitorLimitResponse.status !== 200) {
+          const result = await visitorLimitResponse.json();
+          if (result.error) {
+            throw new OpenAIError(
+              result.error.message,
+              result.error.type,
+              result.error.param,
+              result.error.code,
+            );
+          } else {
+            const decoder = new TextDecoder();
+            throw new Error(
+              `error: ${
+                decoder.decode(result?.value) || result.statusText
+              }`,
+            );
+          }
+        }
+      } catch (error) {
+        message.error('服务器异常，请重试')
+      }
+    }
+
+    // 用户状态
+    // if (isLogin) {
+    //   updateBalance
+    // }
 
     onSend({ role: 'user', content }, plugin);
     setContent('');

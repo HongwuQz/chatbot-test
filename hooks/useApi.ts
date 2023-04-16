@@ -10,7 +10,7 @@ export interface FetchApiOptions extends Omit<RequestInit, 'body' | 'method'> {
 
 const TEST_TOKEN = 'eyKyqrGwp2R8ZHN3dHZ5dXh5eHR7ZG5kpbGmp2R8ZGRuZLKjtbVkfGSovHRyc3t4e3d0eHtkvw'
 
-export const useApi = <T>(url: string, { method, body, needAuth }: FetchApiOptions) => {
+export const useApi = <T>(url: string, { method = 'POST', body }: FetchApiOptions, needAuth?: boolean, reload?: boolean) => {
   const [data, setData] = useState<T>();
   const [loading, setLoading] = useState(true);
   const { getSessionItem } = useSessionStorage()
@@ -42,7 +42,7 @@ export const useApi = <T>(url: string, { method, body, needAuth }: FetchApiOptio
     };
 
     fetchData();
-  }, [url, body, needAuth, getSessionItem, method]);
+  }, [url, body, needAuth, getSessionItem, method, reload]);
 
   return { data, loading };
 };

@@ -13,6 +13,7 @@ import {
 } from '@/types/openai';
 import { Plugin, PluginKey } from '@/types/plugin';
 import { Prompt } from '@/types/prompt';
+import { Balance } from '@/types/user';
 import { getEndpoint } from '@/utils/app/api';
 import {
   cleanConversationHistory,
@@ -40,6 +41,12 @@ interface HomeProps {
   serverSideApiKeyIsSet: boolean;
   serverSidePluginKeysSet: boolean;
   defaultModelId: OpenAIModelID;
+}
+
+const DEFAULT_BALANCE: Balance = {
+  totalCoin: 0,
+  totalCoinMore: 0,
+  totalCoinUse: 0
 }
 
 const Home: React.FC<HomeProps> = ({
@@ -71,6 +78,7 @@ const Home: React.FC<HomeProps> = ({
 
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [showPromptbar, setShowPromptbar] = useState<boolean>(false);
+  const [balance, setBalance] = useState<Balance>(DEFAULT_BALANCE)
 
   // REFS ----------------------------------------------
 
@@ -285,7 +293,47 @@ const Home: React.FC<HomeProps> = ({
 
   // FETCH MODELS ----------------------------------------------
 
-  // const fetchModels = async () => {
+  // const fetchModels = async (key: string) => {
+  //   const error = {
+  //     title: t('Error fetching models.'),
+  //     code: null,
+  //     messageLines: [
+  //       t(
+  //         'Make sure your OpenAI API key is set in the bottom left of the sidebar.',
+  //       ),
+  //       t('If you completed this step, OpenAI may be experiencing issues.'),
+  //     ],
+  //   } as ErrorMessage;
+
+  //   const response = await fetch('/api/models', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       key,
+  //     }),
+  //   });
+
+  //   if (!response.ok) {
+  //     try {
+  //       const data = await response.json();
+  //       Object.assign(error, {
+  //         code: data.error?.code,
+  //         messageLines: [data.error?.message],
+  //       });
+  //     } catch (e) {}
+  //     setModelError(error);
+  //     return;
+  //   }
+
+  //   const data = await response.json();
+
+  //   if (!data) {
+  //     setModelError(error);
+  //     return;
+  //   }
+
   //   setModels(data);
   //   setModelError(null);
   // };
@@ -772,6 +820,7 @@ const Home: React.FC<HomeProps> = ({
                 loading={loading}
                 prompts={prompts}
                 onSend={handleSend}
+                updateBalance={setBalance}
                 onUpdateConversation={handleUpdateConversation}
                 onEditMessage={handleEditMessage}
                 stopConversationRef={stopConversationRef}

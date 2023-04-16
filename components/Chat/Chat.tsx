@@ -1,6 +1,5 @@
 import { Conversation, Message } from '@/types/chat';
 import { KeyValuePair } from '@/types/data';
-import { ErrorMessage } from '@/types/error';
 import { OpenAIModel, OpenAIModelID } from '@/types/openai';
 import { Plugin } from '@/types/plugin';
 import { Prompt } from '@/types/prompt';
@@ -8,8 +7,10 @@ import { throttle } from '@/utils';
 import { IconArrowDown, IconClearAll, IconSettings } from '@tabler/icons-react';
 import { useTranslation } from 'next-i18next';
 import {
+  Dispatch,
   FC,
   MutableRefObject,
+  SetStateAction,
   memo,
   useCallback,
   useEffect,
@@ -20,9 +21,10 @@ import { Spinner } from '../Global/Spinner';
 import { ChatInput } from './ChatInput';
 import { ChatLoader } from './ChatLoader';
 import { ChatMessage } from './ChatMessage';
-import { ErrorMessageDiv } from './ErrorMessageDiv';
+// import { ErrorMessageDiv } from './ErrorMessageDiv';
 import { ModelSelect } from './ModelSelect';
 import { SystemPrompt } from './SystemPrompt';
+import { Balance } from '@/types/user';
 
 interface Props {
   conversation: Conversation;
@@ -39,6 +41,7 @@ interface Props {
     deleteCount: number,
     plugin: Plugin | null,
   ) => void;
+  updateBalance: Dispatch<SetStateAction<Balance>>;
   onUpdateConversation: (
     conversation: Conversation,
     data: KeyValuePair,
@@ -59,6 +62,7 @@ export const Chat: FC<Props> = memo(
     loading,
     prompts,
     onSend,
+    updateBalance,
     onUpdateConversation,
     onEditMessage,
     stopConversationRef,
@@ -307,6 +311,7 @@ export const Chat: FC<Props> = memo(
               conversationIsEmpty={conversation.messages.length === 0}
               model={conversation.model}
               prompts={prompts}
+              updateBalance={updateBalance}
               onSend={(message, plugin) => {
                 setCurrentMessage(message);
                 onSend(message, 0, plugin);
