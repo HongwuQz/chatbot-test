@@ -4,11 +4,9 @@ import { Navbar } from '@/components/Mobile/Navbar';
 import { Promptbar } from '@/components/Promptbar/Promptbar';
 import { ChatBody, Conversation, Message } from '@/types/chat';
 import { KeyValuePair } from '@/types/data';
-import { ErrorMessage } from '@/types/error';
 import { LatestExportFormat, SupportedExportFormats } from '@/types/export';
 import { Folder, FolderType } from '@/types/folder';
 import {
-  OpenAIModel,
   OpenAIModelID,
   OpenAIModels,
   fallbackModelID,
@@ -60,8 +58,7 @@ const Home: React.FC<HomeProps> = ({
   const [messageIsStreaming, setMessageIsStreaming] = useState<boolean>(false);
 
   // const [modelError, setModelError] = useState<ErrorMessage | null>(null);
-
-  const [models, setModels] = useState<OpenAIModel[]>([]);
+  // const [models, setModels] = useState<OpenAIModel[]>([]);
 
   const [folders, setFolders] = useState<Folder[]>([]);
 
@@ -771,7 +768,7 @@ const Home: React.FC<HomeProps> = ({
                 serverSideApiKeyIsSet={serverSideApiKeyIsSet}
                 defaultModelId={defaultModelId}
                 // modelError={modelError}
-                models={models}
+                models={Object.values(OpenAIModels)}
                 loading={loading}
                 prompts={prompts}
                 onSend={handleSend}
