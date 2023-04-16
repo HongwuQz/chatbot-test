@@ -31,7 +31,7 @@ interface Props {
   serverSideApiKeyIsSet: boolean;
   defaultModelId: OpenAIModelID;
   messageIsStreaming: boolean;
-  modelError: ErrorMessage | null;
+  // modelError: ErrorMessage | null;
   loading: boolean;
   prompts: Prompt[];
   onSend: (
@@ -55,7 +55,7 @@ export const Chat: FC<Props> = memo(
     serverSideApiKeyIsSet,
     defaultModelId,
     messageIsStreaming,
-    modelError,
+    // modelError,
     loading,
     prompts,
     onSend,
@@ -194,9 +194,11 @@ export const Chat: FC<Props> = memo(
               </div>
             </div>
           </div>
-        ) : modelError ? (
-          <ErrorMessageDiv error={modelError} />
-        ) : (
+        )
+        // : modelError ? (
+        //   <ErrorMessageDiv error={modelError} />
+        // )
+        : (
           <>
             <div
               className="max-h-full overflow-x-hidden"
