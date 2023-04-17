@@ -3,3 +3,6 @@ export const DEFAULT_SYSTEM_PROMPT =
 
 export const OPENAI_API_HOST =
   process.env.OPENAI_API_HOST || 'https://api.openai.com';
+
+export const GPT4_API_HOST =
+  process.env.GPT4_API_HOST || 'https://api.openai-sb.com'

@@ -1,14 +1,14 @@
-export interface OpenAIModel {
-  id: string;
-  name: string;
-  maxLength: number; // maximum length of a message
-  tokenLimit: number;
-}
-
 export enum OpenAIModelID {
   GPT_3_5 = 'gpt-3.5-turbo',
   GPT_4 = 'gpt-4',
-  IMAGE = 'imageModel' // 待后端确认
+  IMAGE = 'imageModel'
+}
+
+export interface OpenAIModel {
+  id: OpenAIModelID;
+  name: string;
+  maxLength: number; // maximum length of a message
+  tokenLimit: number;
 }
 
 // in case the `DEFAULT_MODEL` environment variable is not set or set to an unsupported model

@@ -1,11 +1,11 @@
 import { Message } from '@/types/chat';
-import { OpenAIModel } from '@/types/openai';
+import { OpenAIModel, OpenAIModelID } from '@/types/openai';
 import {
   createParser,
   ParsedEvent,
   ReconnectInterval,
 } from 'eventsource-parser';
-import { OPENAI_API_HOST } from '../app/const';
+import { GPT4_API_HOST, OPENAI_API_HOST } from '../app/const';
 
 export class OpenAIError extends Error {
   type: string;
@@ -21,34 +21,92 @@ export class OpenAIError extends Error {
   }
 }
 
+interface ApiFetchInfo {
+  apiUrl: string
+  organizationAuth?: {
+    'OpenAI-Organization': string
+  } | ''
+  apiKey: string
+  body: OpenAIChatBody | OpenAIImageBody
+}
+
+interface OpenAIMessage {
+  role: string
+  content: string
+}
+
+interface OpenAIChatBody {
+  model: OpenAIModelID,
+  messages: OpenAIMessage[]
+  max_tokens: number
+  temperature: number
+  stream: boolean
+}
+
+interface OpenAIImageBody {
+  prompt: string,
+  n: 1,
+  size: '1024x1024'
+}
+
 export const OpenAIStream = async (
   model: OpenAIModel,
   systemPrompt: string,
   key: string,
   messages: Message[],
 ) => {
-  const res = await fetch(`${OPENAI_API_HOST}/v1/chat/completions`, {
+
+  const chatBody: OpenAIChatBody = {
+    model: model.id,
+    messages: [
+      {
+        role: 'system',
+        content: systemPrompt,
+      },
+      ...messages,
+    ],
+    max_tokens: 1000,
+    temperature: 1,
+    stream: true,
+  }
+
+  const imageBody: OpenAIImageBody = {
+    prompt: messages[messages.length - 1].content,
+    size: '1024x1024',
+    n: 1,
+  }
+
+  const ApiFetchInfo: Record<OpenAIModelID, ApiFetchInfo> = {
+    // 其中的key已经取消了，后续单独扣除
+    [OpenAIModelID.GPT_3_5]: {
+      apiUrl: `${process.env.OPENAI_API_KEY}/v1/chat/completions`,
+      apiKey: key ?? process.env.OPENAI_API_KEY,
+      organizationAuth: process.env.OPENAI_ORGANIZATION && { 'OpenAI-Organization': process.env.OPENAI_ORGANIZATION },
+      body: chatBody
+    },
+    [OpenAIModelID.GPT_4]: {
+      apiUrl: `${process.env.GTP4_API_KEY}/v1/chat/completions`,
+      apiKey: key ?? process.env.GPT4_API_KEY,
+      body: chatBody
+    },
+    [OpenAIModelID.IMAGE]: {
+      apiUrl: `${process.env.OPENAI_API_KEY}/v1/chat/completions`,
+      apiKey: key ?? process.env.OPENAI_API_KEY,
+      organizationAuth: process.env.OPENAI_ORGANIZATION && { 'OpenAI-Organization': process.env.OPENAI_ORGANIZATION },
+      body: imageBody
+    }
+  }
+
+  const { apiUrl, apiKey, organizationAuth, body } = ApiFetchInfo[model.id]
+
+  const res = await fetch(apiUrl, {
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${key ? key : process.env.OPENAI_API_KEY}`,
-      ...(process.env.OPENAI_ORGANIZATION && {
-        'OpenAI-Organization': process.env.OPENAI_ORGANIZATION,
-      }),
+      Authorization: `Bearer ${apiKey}`,
+      ...organizationAuth,
     },
     method: 'POST',
-    body: JSON.stringify({
-      model: model.id,
-      messages: [
-        {
-          role: 'system',
-          content: systemPrompt,
-        },
-        ...messages,
-      ],
-      max_tokens: 1000,
-      temperature: 1,
-      stream: true,
-    }),
+    body: JSON.stringify(body),
   });
 
   const encoder = new TextEncoder();
