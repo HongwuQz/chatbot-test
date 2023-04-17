@@ -65,8 +65,9 @@ export const OpenAIImage = async (
       }),
   });
 
+
+  const result = await res.json();
   if (res.status !== 200) {
-    const result = await res.json();
     console.log({ error: result })
     if (result.error) {
       throw new OpenAIError(
@@ -85,8 +86,7 @@ export const OpenAIImage = async (
   }
 
   const resBody = res.body
-  const resJson = res.json()
-  console.log({ resBody, resJson })
+  console.log({ resBody, result })
 
-  return resJson;
+  return result;
 };
