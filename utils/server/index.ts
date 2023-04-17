@@ -90,7 +90,7 @@ export const OpenAIStream = async (
       body: chatBody
     },
     [OpenAIModelID.IMAGE]: {
-      apiUrl: `${OPENAI_API_HOST}/v1/chat/completions`,
+      apiUrl: `${OPENAI_API_HOST}/v1/images/generations`,
       apiKey: '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',
       organizationAuth: process.env.OPENAI_ORGANIZATION && { 'OpenAI-Organization': process.env.OPENAI_ORGANIZATION },
       body: imageBody
@@ -135,6 +135,8 @@ export const OpenAIStream = async (
       const onParse = (event: ParsedEvent | ReconnectInterval) => {
         if (event.type === 'event') {
           const data = event.data;
+
+          console.log({ apiRes: data })
 
           if (data === '[DONE]') {
             controller.close();
