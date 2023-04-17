@@ -79,18 +79,18 @@ export const OpenAIStream = async (
   const ApiFetchInfo: Record<OpenAIModelID, ApiFetchInfo> = {
     // 其中的key已经取消了，后续单独扣除
     [OpenAIModelID.GPT_3_5]: {
-      apiUrl: `${process.env.OPENAI_API_KEY}/v1/chat/completions`,
+      apiUrl: `${OPENAI_API_HOST}/v1/chat/completions`,
       apiKey: key ?? process.env.OPENAI_API_KEY,
       organizationAuth: process.env.OPENAI_ORGANIZATION && { 'OpenAI-Organization': process.env.OPENAI_ORGANIZATION },
       body: chatBody
     },
     [OpenAIModelID.GPT_4]: {
-      apiUrl: `${process.env.GTP4_API_KEY}/v1/chat/completions`,
+      apiUrl: `${GPT4_API_HOST}/v1/chat/completions`,
       apiKey: key ?? process.env.GPT4_API_KEY,
       body: chatBody
     },
     [OpenAIModelID.IMAGE]: {
-      apiUrl: `${process.env.OPENAI_API_KEY}/v1/chat/completions`,
+      apiUrl: `${OPENAI_API_HOST}/v1/chat/completions`,
       apiKey: key ?? process.env.OPENAI_API_KEY,
       organizationAuth: process.env.OPENAI_ORGANIZATION && { 'OpenAI-Organization': process.env.OPENAI_ORGANIZATION },
       body: imageBody
