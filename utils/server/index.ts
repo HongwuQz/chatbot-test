@@ -114,6 +114,7 @@ export const OpenAIStream = async (
 
   if (res.status !== 200) {
     const result = await res.json();
+    console.log({ error: result })
     if (result.error) {
       throw new OpenAIError(
         result.error.message,
@@ -129,6 +130,8 @@ export const OpenAIStream = async (
       );
     }
   }
+
+  console.log({ apiRES: res.json() })
 
   const stream = new ReadableStream({
     async start(controller) {
