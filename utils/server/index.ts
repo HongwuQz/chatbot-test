@@ -55,7 +55,7 @@ export const OpenAIStream = async (
   key: string,
   messages: Message[],
 ) => {
-
+  console.log('Starting fetch...')
   const chatBody: OpenAIChatBody = {
     model: model.id,
     messages: [
@@ -80,18 +80,18 @@ export const OpenAIStream = async (
     // 其中的key已经取消了，后续单独扣除
     [OpenAIModelID.GPT_3_5]: {
       apiUrl: `${OPENAI_API_HOST}/v1/chat/completions`,
-      apiKey: key ?? process.env.OPENAI_API_KEY,
+      apiKey: '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',
       organizationAuth: process.env.OPENAI_ORGANIZATION && { 'OpenAI-Organization': process.env.OPENAI_ORGANIZATION },
       body: chatBody
     },
     [OpenAIModelID.GPT_4]: {
       apiUrl: `${GPT4_API_HOST}/v1/chat/completions`,
-      apiKey: key ?? process.env.GPT4_API_KEY,
+      apiKey: 'sb-4a3b5759b2048260f1087271e1e986f2',
       body: chatBody
     },
     [OpenAIModelID.IMAGE]: {
       apiUrl: `${OPENAI_API_HOST}/v1/chat/completions`,
-      apiKey: key ?? process.env.OPENAI_API_KEY,
+      apiKey: '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',
       organizationAuth: process.env.OPENAI_ORGANIZATION && { 'OpenAI-Organization': process.env.OPENAI_ORGANIZATION },
       body: imageBody
     }
