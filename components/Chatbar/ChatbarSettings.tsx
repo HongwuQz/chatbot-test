@@ -8,6 +8,7 @@ import { SidebarButton } from '../Sidebar/SidebarButton';
 import { ClearConversations } from './ClearConversations';
 import { LoginInport } from './LoginInport';
 import { Balance } from './Balance';
+import { BalanceResponse } from '@/types/balance';
 
 interface Props {
   token: string
@@ -25,6 +26,8 @@ interface Props {
   onImportConversations: (data: SupportedExportFormats) => void;
   onPluginKeyChange: (pluginKey: PluginKey) => void;
   onClearPluginKey: (pluginKey: PluginKey) => void;
+  balance: BalanceResponse
+  setBalance: Dispatch<SetStateAction<BalanceResponse>>
 }
 
 export const ChatbarSettings: FC<Props> = ({
@@ -36,6 +39,8 @@ export const ChatbarSettings: FC<Props> = ({
   onClearConversations,
   onExportConversations,
   onImportConversations,
+  balance,
+  setBalance
 }) => {
   const { t } = useTranslation('sidebar');
   const isLogin = useMemo(() => !!token, [token])
@@ -65,7 +70,7 @@ export const ChatbarSettings: FC<Props> = ({
       />
 
       <SidebarButton text={isLogin ? '用户信息': '游客信息'} icon={<IconKey size={18} />} onClick={() => {}} />
-      <Balance token={token} />
+      <Balance token={token} balance={balance} setBalance={setBalance} />
       <LoginInport token={token} setToken={setToken} /> 
     </div>
   );

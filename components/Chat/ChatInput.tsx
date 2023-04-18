@@ -26,6 +26,7 @@ import { VariableModal } from './VariableModal';
 import { message } from 'antd';
 import { OpenAIError } from '@/utils/server';
 import { BASE_BACKEND_URL } from '@/utils/constant';
+import { msgIntercetor } from '@/utils/app/interceptor';
 
 interface Props {
   token: string
@@ -88,7 +89,7 @@ export const ChatInput: FC<Props> = ({
   };
 
   // 该函数内鉴权
-  const handleSend = async () => {
+  const handleSend = async (model: OpenAIModel) => {
     if (messageIsStreaming) {
       return;
     }
@@ -98,84 +99,10 @@ export const ChatInput: FC<Props> = ({
       return;
     }
 
-    // 游客状态
-    if (!isLogin) {
-      try {
-        const visitorLimitResponse = await fetch(`${process.env.BASE_BACKEND_URL || BASE_BACKEND_URL}/sample/ChatSend`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-  
-        // 请求失败
-        if (visitorLimitResponse.status !== 200) {
-          const result = await visitorLimitResponse.json();
-          if (result.error) {
-            throw new OpenAIError(
-              result.error.message,
-              result.error.type,
-              result.error.param,
-              result.error.code,
-            );
-          } else {
-            const decoder = new TextDecoder();
-            throw new Error(
-              `error: ${
-                decoder.decode(result?.value) || result.statusText
-              }`,
-            );
-          }
-        }
-      } catch (error) {
-        message.error('服务器异常，请重试')
-      }
-    }
+    const interceptor = await msgIntercetor(isLogin, token, model)
 
-    // 用户状态
-    if (isLogin) {
-      // 改成await + fetch 获取用户账户
-      try {
-        const userBalanceResponse = await fetch(`${process.env.BASE_BACKEND_URL || BASE_BACKEND_URL}/user/Balance`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Auth: token
-          },
-        })
-  
-        // 获取用户余额失败
-        if (userBalanceResponse.status !== 200) {
-          const result = await userBalanceResponse.json();
-          if (result.error) {
-            throw new OpenAIError(
-              result.error.message,
-              result.error.type,
-              result.error.param,
-              result.error.code,
-            );
-          } else {
-            const decoder = new TextDecoder();
-            throw new Error(
-              `error: ${
-                decoder.decode(result?.value) || result.statusText
-              }`,
-            );
-          }
-        } else {
-          // 获取余额正常
-          const { Data } = await userBalanceResponse.json();
-          const { totalCoin, totalCoinMore, totalCoinUse } = Data
-          const moneyRest = Number(totalCoin) + Number(totalCoinMore) - Number(totalCoinUse)
-          console.log({ totalCoin, totalCoinMore, totalCoinUse, moneyRest })
-          if (moneyRest <= -20) {
-            message.error('余额不足请充值')
-            return;
-          }
-        }
-      } catch (error) {
-        message.error('服务器异常，请重试')
-      }
+    if(!interceptor) {
+      return
     }
 
     onSend({ role: 'user', content }, plugin);
@@ -245,7 +172,7 @@ export const ChatInput: FC<Props> = ({
       }
     } else if (e.key === 'Enter' && !isTyping && !isMobile() && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      handleSend(model);
     } else if (e.key === '/' && e.metaKey) {
       e.preventDefault();
       setShowPluginSelect(!showPluginSelect);
@@ -409,7 +336,7 @@ export const ChatInput: FC<Props> = ({
 
           <button
             className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
-            onClick={handleSend}
+            onClick={useCallback(() => handleSend(model), [model])}
           >
             {messageIsStreaming ? (
               <div className="h-4 w-4 animate-spin rounded-full border-t-2 border-neutral-800 opacity-60 dark:border-neutral-100"></div>

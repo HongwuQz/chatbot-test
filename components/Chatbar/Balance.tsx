@@ -1,22 +1,19 @@
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { Dispatch, FC, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { IconRefresh } from "@tabler/icons-react";
 import { getUserBalance, getChargeList } from "@/utils/apis/balance";
 import { RechargeModal, RechargeOption } from "./RechargeModal";
+import { BalanceResponse } from "@/types/balance";
 
-export interface BalanceResponse {
-  totalCoin: number;
-  totalCoinMore: number;
-  totalCoinUse: number;
+interface Props {
+  token: string
+  balance: BalanceResponse
+  setBalance: Dispatch<SetStateAction<BalanceResponse>>
 }
 
-export const Balance: FC<{ token: string }> = ({ token }) => {
+export const Balance: FC<Props> = ({ token, balance, setBalance }) => {
   const isLogin = useMemo(() => !!token, [token])
   const authorization = useMemo(() => token && { Auth: token }, [token]);
-  const [balance, setBalance] = useState<BalanceResponse>({
-    totalCoin: 0,
-    totalCoinMore: 0,
-    totalCoinUse: 0,
-  });
+
   const [isRechargeModalOpen, setIsRechargeModalOpen] = useState(false);
   const [money, setMoney] = useState("10"); // 默认选择第一个档位
   const [rechargeOptions, setRechargeOptions] = useState<RechargeOption[]>([])

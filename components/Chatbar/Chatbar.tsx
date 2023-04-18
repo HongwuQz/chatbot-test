@@ -10,6 +10,7 @@ import { ChatFolders } from '../Folders/Chat/ChatFolders';
 import { Search } from '../Sidebar/Search';
 import { ChatbarSettings } from './ChatbarSettings';
 import { Conversations } from './Conversations';
+import { BalanceResponse } from '@/types/balance';
 
 interface Props {
   token: string
@@ -23,6 +24,8 @@ interface Props {
   pluginKeys: PluginKey[];
   serverSidePluginKeysSet: boolean;
   folders: Folder[];
+  balance: BalanceResponse
+  setBalance: Dispatch<SetStateAction<BalanceResponse>>
   onCreateFolder: (name: string) => void;
   onDeleteFolder: (folderId: string) => void;
   onUpdateFolder: (folderId: string, name: string) => void;
@@ -54,6 +57,8 @@ export const Chatbar: FC<Props> = ({
   pluginKeys,
   serverSidePluginKeysSet,
   folders,
+  balance,
+  setBalance,
   onCreateFolder,
   onDeleteFolder,
   onUpdateFolder,
@@ -206,8 +211,10 @@ export const Chatbar: FC<Props> = ({
       <ChatbarSettings
         token={token}
         setToken={setToken}
+        balance={balance}
         lightMode={lightMode}
         apiKey={apiKey}
+        setBalance={setBalance}
         serverSideApiKeyIsSet={serverSideApiKeyIsSet}
         pluginKeys={pluginKeys}
         serverSidePluginKeysSet={serverSidePluginKeysSet}
