@@ -240,26 +240,27 @@ const Home: React.FC<HomeProps> = ({
             };
 
             setSelectedConversation(updatedConversation);
-            // 判断是否在线，并向后端发送请求
-            if(token) {
-              const chatRes = await fetch(`${CHATBOT_BASE_URL}/ChatSend`, {
-                method: 'POST',
-                headers: {
-                  "Content-Type": "application/json",
-                  Auth: token,
-                },
-                body: JSON.stringify({
-                  content: chatBody.messages[chatBody.messages.length - 1].content,
-                  model: chatBody.model.id === OpenAIModelID.GPT_3_5 ? "1" : "2"
-                })
-              })
-              if (!chatRes.ok) {
-                setLoading(false);
-                setMessageIsStreaming(false);
-                toast.error(chatRes.statusText);
-                return;
-              }
-            }
+          }
+        }
+
+        // 判断是否在线，并向后端发送请求
+        if(token) {
+          const chatRes = await fetch(`${CHATBOT_BASE_URL}/ChatSend`, {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+              Auth: token,
+            },
+            body: JSON.stringify({
+              content: chatBody.messages[chatBody.messages.length - 1].content,
+              model: chatBody.model.id === OpenAIModelID.GPT_3_5 ? "1" : "2"
+            })
+          })
+          if (!chatRes.ok) {
+            setLoading(false);
+            setMessageIsStreaming(false);
+            toast.error(chatRes.statusText);
+            return;
           }
         }
 
@@ -471,7 +472,7 @@ const Home: React.FC<HomeProps> = ({
 
     const newConversation: Conversation = {
       id: uuidv4(),
-      name: `${t('New Conversation')}`,
+      name: `${t('新建聊天')}`,
       messages: [],
       model: lastConversation?.model || {
         id: OpenAIModels[defaultModelId].id,
@@ -509,7 +510,7 @@ const Home: React.FC<HomeProps> = ({
     } else {
       setSelectedConversation({
         id: uuidv4(),
-        name: 'New conversation',
+        name: '新建聊天',
         messages: [],
         model: OpenAIModels[defaultModelId],
         prompt: DEFAULT_SYSTEM_PROMPT,
@@ -543,7 +544,7 @@ const Home: React.FC<HomeProps> = ({
 
     setSelectedConversation({
       id: uuidv4(),
-      name: 'New conversation',
+      name: '新建聊天',
       messages: [],
       model: OpenAIModels[defaultModelId],
       prompt: DEFAULT_SYSTEM_PROMPT,
@@ -712,7 +713,7 @@ const Home: React.FC<HomeProps> = ({
     } else {
       setSelectedConversation({
         id: uuidv4(),
-        name: 'New conversation',
+        name: '新建聊天',
         messages: [],
         model: OpenAIModels[defaultModelId],
         prompt: DEFAULT_SYSTEM_PROMPT,

@@ -115,8 +115,8 @@ When deploying the application, the following environment variables can be set:
 | Environment Variable  | Default value                  | Description                                             |
 | --------------------- | ------------------------------ | ------------------------------------------------------- |
 | OPENAI_API_KEY        |                                | The default API key used for authentication with OpenAI |
-| DEFAULT_MODEL         | `gpt-3.5-turbo`                | The default model to use on new conversations           |
-| DEFAULT_SYSTEM_PROMPT | [see here](utils/app/const.ts) | The default system prompt to use on new conversations   |
+| DEFAULT_MODEL         | `gpt-3.5-turbo`                | The default model to use on 新建聊天s           |
+| DEFAULT_SYSTEM_PROMPT | [see here](utils/app/const.ts) | The default system prompt to use on 新建聊天s   |
 | GOOGLE_API_KEY        |                                | See [Custom Search JSON API documentation][GCSE]        |
 | GOOGLE_CSE_ID         |                                | See [Custom Search JSON API documentation][GCSE]        |
 
