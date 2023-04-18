@@ -811,7 +811,7 @@ const Home: React.FC<HomeProps> = ({
                 </button>
                 <div
                   onClick={handleToggleChatbar}
-                  className="absolute top-0 left-0 z-10 h-full w-full bg-black opacity-70 sm:hidden"
+                  className="absolute top-0 left-0 z-40 h-full w-full bg-black opacity-70 sm:hidden"
                 ></div>
               </div>
             ) : (
@@ -862,7 +862,7 @@ const Home: React.FC<HomeProps> = ({
                 </button>
                 <div
                   onClick={handleTogglePromptbar}
-                  className="absolute top-0 left-0 z-10 h-full w-full bg-black opacity-70 sm:hidden"
+                  className="absolute top-0 left-0 z-40 h-full w-full bg-black opacity-70 sm:hidden"
                 ></div>
               </div>
             ) : (
