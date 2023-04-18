@@ -3,6 +3,8 @@ import { Button, Form, Input } from 'antd';
 import { SMSCaptcha } from './SMSCaptcha';
 import { getCode } from '@/utils/apis/user';
 import { LoginData } from '@/types/user';
+import { BalanceResponse } from '@/types/balance';
+import { getUserBalance } from '@/utils/apis/balance';
 
 interface LoginProps {
   setToken: Dispatch<SetStateAction<string>>
@@ -11,9 +13,10 @@ interface LoginProps {
       register: (form: LoginData) => Promise<any>;
   }
   setIsChanging: Dispatch<SetStateAction<boolean>>;
+  setBalance: Dispatch<SetStateAction<BalanceResponse>>
 }
 
-const Login: React.FC<LoginProps> = ({ setToken, onLogin, setIsChanging }) => {
+const Login: React.FC<LoginProps> = ({ setToken, onLogin, setIsChanging, setBalance }) => {
   const [phone, setPhone] = useState('');
   const [pass, setPass] = useState('');
   const [code, setCode] = useState('')
@@ -26,6 +29,11 @@ const Login: React.FC<LoginProps> = ({ setToken, onLogin, setIsChanging }) => {
        if (res.Code === 200) {
         sessionStorage.setItem('TOKEN', res?.Data?.token)
         setToken(res?.Data?.token)
+        getUserBalance(res?.Data?.token).then(res => {
+            if (res.Code === 200) {
+                setBalance(res.Data)
+            }
+        })
        }
        setIsChanging(false)
    })

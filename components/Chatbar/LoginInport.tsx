@@ -3,13 +3,15 @@ import { Dispatch, FC, KeyboardEvent, SetStateAction, useEffect, useMemo, useRef
 import { SidebarButton } from '../Sidebar/SidebarButton';
 import Login from './Login';
 import { login, register } from '@/utils/apis/user';
+import { BalanceResponse } from '@/types/balance';
 
 interface Props {
   token: string
   setToken: Dispatch<SetStateAction<string>>
+  setBalance: Dispatch<SetStateAction<BalanceResponse>>
 }
 
-export const LoginInport: FC<Props> = ({ token, setToken }) => {
+export const LoginInport: FC<Props> = ({ token, setToken, setBalance }) => {
 
   const [isChanging, setIsChanging] = useState(false);
 
@@ -24,6 +26,7 @@ export const LoginInport: FC<Props> = ({ token, setToken }) => {
   };
 
   const onLogout = () => {
+    sessionStorage.removeItem("TOKEN")
     setToken('')
   }
 
@@ -72,7 +75,7 @@ export const LoginInport: FC<Props> = ({ token, setToken }) => {
                 role="dialog"
               >
                 <div className="mb-2 flex justify-center text-xl">登录</div>
-                <Login setToken={setToken} onLogin={{login, register}} setIsChanging={setIsChanging} />
+                <Login setToken={setToken} onLogin={{login, register}} setIsChanging={setIsChanging} setBalance={setBalance} />
               </div>
             </div>
           </div>

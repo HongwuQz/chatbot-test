@@ -30,7 +30,7 @@ export const RechargeModal: React.FC<RechargeOptionsProps> = ({
       <div className="flex space-x-3 space-y-3 flex-wrap">
         {options.map((option, index) => (
           <>
-            <div key={index} className="">
+            <div className="flex flex-col">
               <div>
                 <span className="text-2xl">{option.coin}
                   {option.coinMore !== 0 && <span className="text-gray-400 text-sm">+{option.coinMore}</span>}

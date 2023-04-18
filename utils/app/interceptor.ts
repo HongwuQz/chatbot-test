@@ -73,8 +73,7 @@ export async function msgIntercetor(isLogin: boolean, token: string, model: Open
             const { Data } = await userBalanceResponse.json();
             const { totalCoin, totalCoinMore, totalCoinUse } = Data
             const moneyRest = Number(totalCoin) + Number(totalCoinMore) - Number(totalCoinUse)
-            console.log({ totalCoin, totalCoinMore, totalCoinUse, moneyRest })
-            const questionCost = model.id === OpenAIModelID.GPT_3_5 ? 1 : 30
+            const questionCost = model.id === OpenAIModelID.GPT_3_5 ? 1 : -3000
             if (moneyRest < questionCost) {
                 message.error('余额不足请充值')
                 return;
