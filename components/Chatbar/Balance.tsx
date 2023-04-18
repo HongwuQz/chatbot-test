@@ -1,8 +1,8 @@
 import { Dispatch, FC, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { IconRefresh } from "@tabler/icons-react";
-import { getUserBalance, getChargeList } from "@/utils/apis/balance";
 import { RechargeModal, RechargeOption } from "./RechargeModal";
 import { BalanceResponse } from "@/types/balance";
+import { CHATBOT_BASE_URL } from "@/utils/app/const";
 
 interface Props {
   token: string
@@ -12,60 +12,46 @@ interface Props {
 
 export const Balance: FC<Props> = ({ token, balance, setBalance }) => {
   const isLogin = useMemo(() => !!token, [token])
-  const authorization = useMemo(() => token && { Auth: token }, [token]);
 
   const [isRechargeModalOpen, setIsRechargeModalOpen] = useState(false);
-  const [money, setMoney] = useState("10"); // 默认选择第一个档位
   const [rechargeOptions, setRechargeOptions] = useState<RechargeOption[]>([])
 
-  const handleRefreshBalance = useCallback(() => {
-    getUserBalance(token).then(res => {
-      if(res.Code === 200) {
-        setBalance(res.Data)
-      }
-    })
-  }, []);
-
-  useEffect(() => {
-    getChargeList(token).then(res => {
-      if(res.Code === 200) {
-        setRechargeOptions(res.Data.items)
-      }
-    })
-  }, [token])
-
-  const isMobile = () => {
-    const userAgent =
-      typeof window.navigator === 'undefined' ? '' : navigator.userAgent;
-    const mobileRegex =
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
-    return mobileRegex.test(userAgent);
-  };
-
-  const handleRecharge = async () => {
-    setIsRechargeModalOpen(false);
-    try {
-      const response = await fetch(
-        `http://39.107.45.104:7000/${isLogin ? "/" : ""}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...authorization,
-          },
-          body: JSON.stringify({ money }),
-        }
-      );
-      const data = await response.json();
-      setBalance(data.Data);
-    } catch (error) {
-      console.error(error);
+  const handleRefreshBalance = async () => {
+    const balanceRes = await fetch(`${CHATBOT_BASE_URL}/user/Balance`, {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        Auth: token,
+        },
+      })
+    const { Code, Data } = await balanceRes.json()
+    if (Code === 200) {
+      setBalance(Data)
     }
-  };
+  }
+
+  const hanldeChargeList = async () => {
+    const chargeList = await fetch(`${CHATBOT_BASE_URL}/charge/items`, {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        Auth: token,
+        },
+    })
+    const { Code, Data } = await chargeList.json()
+    if (Code === 200) {
+      setRechargeOptions(Data?.items)
+    }
+  }
 
   useEffect(() => {
-    handleRefreshBalance();
-  }, []);
+    hanldeChargeList
+    handleRefreshBalance
+    return () => {
+      hanldeChargeList()
+      handleRefreshBalance()
+    }
+  }, [token])
 
   const total = useMemo(() => {
     const {totalCoin, totalCoinMore, totalCoinUse} = balance
@@ -99,7 +85,7 @@ export const Balance: FC<Props> = ({ token, balance, setBalance }) => {
         </button>
       </div>
       {/* 充值弹窗 */}
-      <RechargeModal visible={isRechargeModalOpen} options={rechargeOptions} onClose={() => setIsRechargeModalOpen(!isRechargeModalOpen)} />
+      <RechargeModal token={token} setBalance={setBalance} visible={isRechargeModalOpen} options={rechargeOptions} onClose={() => setIsRechargeModalOpen(!isRechargeModalOpen)} />
     </>
   );
 };

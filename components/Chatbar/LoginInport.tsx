@@ -4,6 +4,8 @@ import { SidebarButton } from '../Sidebar/SidebarButton';
 import Login from './Login';
 import { login, register } from '@/utils/apis/user';
 import { BalanceResponse } from '@/types/balance';
+import { DEFAULT_BALANCE } from '@/pages';
+import { message } from 'antd';
 
 interface Props {
   token: string
@@ -27,7 +29,9 @@ export const LoginInport: FC<Props> = ({ token, setToken, setBalance }) => {
 
   const onLogout = () => {
     sessionStorage.removeItem("TOKEN")
+    setBalance(DEFAULT_BALANCE)
     setToken('')
+    message.success("注销成功")
   }
 
   useEffect(() => {

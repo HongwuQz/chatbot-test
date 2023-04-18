@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useMemo, useState } from 'react';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import { SMSCaptcha } from './SMSCaptcha';
 import { getCode } from '@/utils/apis/user';
 import { LoginData } from '@/types/user';
@@ -31,10 +31,11 @@ const Login: React.FC<LoginProps> = ({ setToken, onLogin, setIsChanging, setBala
         setToken(res?.Data?.token)
         getUserBalance(res?.Data?.token).then(res => {
             if (res.Code === 200) {
-                setBalance(res.Data)
+              setBalance(res.Data)
             }
         })
        }
+       message.success(register ? '注册成功' : '登录成功')
        setIsChanging(false)
    })
   }

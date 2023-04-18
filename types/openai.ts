@@ -34,3 +34,9 @@ export const OpenAIModels: Record<OpenAIModelID, OpenAIModel> = {
     tokenLimit: 8000,
   },
 };
+
+export const OpenAIModelPrice: Record<OpenAIModel["name"], string> = {
+  [OpenAIModels["gpt-3.5-turbo"].name]: '1 凤凰币/次',
+  [OpenAIModels["gpt-4"].name]: '30 凤凰币/次',
+  [OpenAIModels["imageModel"].name]: '10 凤凰币/次'
+}

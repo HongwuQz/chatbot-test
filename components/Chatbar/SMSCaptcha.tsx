@@ -35,7 +35,7 @@ export const SMSCaptcha: React.FC<SMSCaptchaProps> = ({ getCaptcha, ...rest }) =
   return (
     <Input.Search
       placeholder="请输入手机号"
-      enterButton={<Button className='text-white' {...buttonProps}></Button>}
+      enterButton={<Button {...buttonProps}></Button>}
       {...rest}
     />
   );

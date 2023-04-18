@@ -52,7 +52,7 @@ export interface BalanceResponse {
   totalCoinUse: number;
 }
 
-const DEFAULT_BALANCE: Balance = {
+export const DEFAULT_BALANCE: Balance = {
   totalCoin: 0,
   totalCoinMore: 0,
   totalCoinUse: 0
