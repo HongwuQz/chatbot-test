@@ -3,6 +3,7 @@ import { Modal, Button, Badge, Radio } from "antd";
 import { NumberInput } from "./NumberInput";
 import { BalanceResponse } from "@/types/balance";
 import { CHATBOT_BASE_URL } from "@/utils/app/const";
+import { getUserBalance } from "@/utils/apis/balance";
 
 export interface RechargeOption {
   money: number;
@@ -56,7 +57,11 @@ export const RechargeModal: React.FC<RechargeOptionsProps> = ({
     const { Code, Data } = await response.json();
     if (Code === 200) {
       window.location.href = Data
-      // setBalance(Data)
+      getUserBalance(token).then(balanceRes => {
+        if (balanceRes.Code === 200) {
+          setBalance(balanceRes.Data)
+        }
+      })
     }
   }, [token, isMobile]);
   
@@ -69,8 +74,8 @@ export const RechargeModal: React.FC<RechargeOptionsProps> = ({
     >
         <div className="flex mx-3 my-3 flex-wrap justify-between">
           {options.map(({ coinMore, coin, money, avgText }, index) => (
-            <Badge.Ribbon placement="start" color="#ee7737" text={`${avgText}币/元`}>
-              <div className="item flex flex-col items-center mb-[15px] bg-[#f6f6f6] pt-[25px] my-[5px] shadow-[0_0_10px_rgba(0,0,0,0.10)] w-[130px]" key={index}>
+            <Badge.Ribbon key={index} placement="start" color="#ee7737" text={`${avgText}币/元`}>
+              <div className="item flex flex-col items-center mb-[15px] bg-[#f6f6f6] pt-[25px] my-[5px] shadow-[0_0_10px_rgba(0,0,0,0.10)] w-[130px]">
                 <span className="text-xl text-[#ee7737] flex justify-center">¥ {money}</span>
                 <span className="text-gray-500 flex justify-center">{`${coin}凤凰币`}</span>
                 <Button onClick={() => handleRecharge(String(money))} className="flex justify-center w-[110px] h-[30px]">{coinMore === 0 ? '充值' : `充值送${coinMore}`}</Button>
