@@ -2,6 +2,7 @@ import { Chat } from '@/components/Chat/Chat';
 import { Chatbar } from '@/components/Chatbar/Chatbar';
 import { Navbar } from '@/components/Mobile/Navbar';
 import { Promptbar } from '@/components/Promptbar/Promptbar';
+import { useApi } from '@/hooks/useApi';
 import { ChatBody, Conversation, Message } from '@/types/chat';
 import { KeyValuePair } from '@/types/data';
 import { LatestExportFormat, SupportedExportFormats } from '@/types/export';
@@ -19,7 +20,7 @@ import {
   cleanConversationHistory,
   cleanSelectedConversation,
 } from '@/utils/app/clean';
-import { DEFAULT_SYSTEM_PROMPT } from '@/utils/app/const';
+import { CHATBOT_BASE_URL, DEFAULT_SYSTEM_PROMPT } from '@/utils/app/const';
 import {
   saveConversation,
   saveConversations,
@@ -55,6 +56,12 @@ const Home: React.FC<HomeProps> = ({
   defaultModelId,
 }) => {
   const { t } = useTranslation('chat');
+  const [token, setToken] = useState<string>('')
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("TOKEN")
+    token && setToken(token)
+  }, [token])
 
   // STATE ----------------------------------------------
 
@@ -78,7 +85,6 @@ const Home: React.FC<HomeProps> = ({
 
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [showPromptbar, setShowPromptbar] = useState<boolean>(false);
-  const [balance, setBalance] = useState<Balance>(DEFAULT_BALANCE)
 
   // REFS ----------------------------------------------
 
@@ -122,6 +128,11 @@ const Home: React.FC<HomeProps> = ({
         prompt: updatedConversation.prompt,
       };
 
+      // 请求图片时数据处理
+      // if (updatedConversation.id === OpenAIModelID.IMAGE) {
+        
+      // }
+
       const endpoint = getEndpoint(plugin);
       let body;
 
@@ -140,7 +151,7 @@ const Home: React.FC<HomeProps> = ({
       }
 
       const controller = new AbortController();
-      const response = await fetch(endpoint, {
+      const nextRes = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -149,14 +160,14 @@ const Home: React.FC<HomeProps> = ({
         body,
       });
 
-      if (!response.ok) {
+      if (!nextRes.ok) {
         setLoading(false);
         setMessageIsStreaming(false);
-        toast.error(response.statusText);
+        toast.error(nextRes.statusText);
         return;
       }
 
-      const data = response.body;
+      const data = nextRes.body;
 
       if (!data) {
         setLoading(false);
@@ -229,6 +240,26 @@ const Home: React.FC<HomeProps> = ({
             };
 
             setSelectedConversation(updatedConversation);
+            // 判断是否在线，并向后端发送请求
+            if(token) {
+              const chatRes = await fetch(`${CHATBOT_BASE_URL}/ChatSend`, {
+                method: 'POST',
+                headers: {
+                  "Content-Type": "application/json",
+                  Auth: token,
+                },
+                body: JSON.stringify({
+                  content: chatBody.messages[chatBody.messages.length - 1].content,
+                  model: chatBody.model.id === OpenAIModelID.GPT_3_5 ? "1" : "2"
+                })
+              })
+              if (!chatRes.ok) {
+                setLoading(false);
+                setMessageIsStreaming(false);
+                toast.error(chatRes.statusText);
+                return;
+              }
+            }
           }
         }
 
@@ -253,7 +284,7 @@ const Home: React.FC<HomeProps> = ({
 
         setMessageIsStreaming(false);
       } else {
-        const { answer } = await response.json();
+        const { answer } = await nextRes.json();
 
         const updatedMessages: Message[] = [
           ...updatedConversation.messages,
@@ -290,53 +321,6 @@ const Home: React.FC<HomeProps> = ({
       }
     }
   };
-
-  // FETCH MODELS ----------------------------------------------
-
-  // const fetchModels = async (key: string) => {
-  //   const error = {
-  //     title: t('Error fetching models.'),
-  //     code: null,
-  //     messageLines: [
-  //       t(
-  //         'Make sure your OpenAI API key is set in the bottom left of the sidebar.',
-  //       ),
-  //       t('If you completed this step, OpenAI may be experiencing issues.'),
-  //     ],
-  //   } as ErrorMessage;
-
-  //   const response = await fetch('/api/models', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       key,
-  //     }),
-  //   });
-
-  //   if (!response.ok) {
-  //     try {
-  //       const data = await response.json();
-  //       Object.assign(error, {
-  //         code: data.error?.code,
-  //         messageLines: [data.error?.message],
-  //       });
-  //     } catch (e) {}
-  //     setModelError(error);
-  //     return;
-  //   }
-
-  //   const data = await response.json();
-
-  //   if (!data) {
-  //     setModelError(error);
-  //     return;
-  //   }
-
-  //   setModels(data);
-  //   setModelError(null);
-  // };
 
   // BASIC HANDLERS --------------------------------------------
 
@@ -763,6 +747,8 @@ const Home: React.FC<HomeProps> = ({
             {showSidebar ? (
               <div>
                 <Chatbar
+                  token={token}
+                  setToken={setToken}
                   loading={messageIsStreaming}
                   conversations={conversations}
                   lightMode={lightMode}
@@ -810,6 +796,7 @@ const Home: React.FC<HomeProps> = ({
 
             <div className="flex flex-1">
               <Chat
+                token={token}
                 conversation={selectedConversation}
                 messageIsStreaming={messageIsStreaming}
                 apiKey={apiKey}
@@ -820,7 +807,6 @@ const Home: React.FC<HomeProps> = ({
                 loading={loading}
                 prompts={prompts}
                 onSend={handleSend}
-                updateBalance={setBalance}
                 onUpdateConversation={handleUpdateConversation}
                 onEditMessage={handleEditMessage}
                 stopConversationRef={stopConversationRef}

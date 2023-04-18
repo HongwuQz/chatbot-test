@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { message } from 'antd';
-import useSessionStorage from './useSessionStorage';
+import { useCookies } from 'react-cookie';
 
 export interface FetchApiOptions extends Omit<RequestInit, 'body' | 'method'> {
   method?: 'POST' | 'GET'
@@ -8,17 +8,17 @@ export interface FetchApiOptions extends Omit<RequestInit, 'body' | 'method'> {
   needAuth?: boolean
 }
 
-const TEST_TOKEN = 'eyKyqrGwp2R8ZHN3dHZ5dXh5eHR7ZG5kpbGmp2R8ZGRuZLKjtbVkfGSovHRyc3t4e3d0eHtkvw'
+// const TEST_TOKEN = 'eyKyqrGwp2R8ZHN3dHZ5dXh5eHR7ZG5kpbGmp2R8ZGRuZLKjtbVkfGSovHRyc3t4e3d0eHtkvw'
 
 export const useApi = <T>(url: string, { method = 'POST', body }: FetchApiOptions, needAuth?: boolean, reload?: boolean) => {
   const [data, setData] = useState<T>();
   const [loading, setLoading] = useState(true);
-  const { getSessionItem } = useSessionStorage()
+  const [cookies] = useCookies(['TOKEN'])
 
   useEffect(() => {
     const fetchData = async () => {
     //   const authorizaion = await needAuth && { Auth: getSessionItem("TOKEN") }
-    const authorizaion = needAuth && { Auth: TEST_TOKEN }
+    const authorizaion = needAuth && { Auth: cookies.TOKEN }
       try {
         const res = await fetch(url, {
           method: method,
@@ -42,7 +42,7 @@ export const useApi = <T>(url: string, { method = 'POST', body }: FetchApiOption
     };
 
     fetchData();
-  }, [url, body, needAuth, getSessionItem, method, reload]);
+  }, [url, body, needAuth, cookies, method, reload]);
 
   return { data, loading };
 };

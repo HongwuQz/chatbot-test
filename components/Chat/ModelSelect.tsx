@@ -36,7 +36,7 @@ export const ModelSelect: FC<Props> = ({
             );
           }}
         >
-          {models.map((model) => (
+          {models.filter(item => item.id !== OpenAIModelID.IMAGE).map((model) => (
             <option
               key={model.id}
               value={model.id}

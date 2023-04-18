@@ -5,8 +5,6 @@ import tiktokenModel from '@dqbd/tiktoken/encoders/cl100k_base.json';
 import { Tiktoken, init } from '@dqbd/tiktoken/lite/init';
 // @ts-expect-error
 import wasm from '../../node_modules/@dqbd/tiktoken/lite/tiktoken_bg.wasm?module';
-import { OpenAIModelID } from '@/types/openai';
-import { OpenAIImage } from '@/utils/server/image';
 
 export const config = {
   runtime: 'edge',
@@ -14,7 +12,7 @@ export const config = {
 
 const handler = async (req: Request): Promise<Response> => {
   try {
-    const { model, messages, key, prompt } = (await req.json()) as ChatBody;
+    const { model, messages, prompt } = (await req.json()) as ChatBody;
 
     await init((imports: WebAssembly.Imports | undefined) => WebAssembly.instantiate(wasm, imports));
     const encoding = new Tiktoken(
@@ -46,9 +44,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     encoding.free();
 
-    const stream = await model.id === OpenAIModelID.IMAGE ? OpenAIStream(model, promptToSend, key, messagesToSend) : OpenAIImage(messagesToSend);
+    const stream = await OpenAIStream(model, promptToSend, messagesToSend);
 
-    return new Response(await stream);
+    return new Response(stream);
   } catch (error) {
     console.error(error);
     if (error instanceof OpenAIError) {

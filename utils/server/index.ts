@@ -52,7 +52,6 @@ interface OpenAIImageBody {
 export const OpenAIStream = async (
   model: OpenAIModel,
   systemPrompt: string,
-  key: string,
   messages: Message[],
 ) => {
   console.log('Starting fetch...')
@@ -130,8 +129,6 @@ export const OpenAIStream = async (
       );
     }
   }
-
-  console.log({ apiRES: res.json() })
 
   const stream = new ReadableStream({
     async start(controller) {

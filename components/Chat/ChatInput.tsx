@@ -11,45 +11,41 @@ import {
 } from '@tabler/icons-react';
 import { useTranslation } from 'next-i18next';
 import {
-  Dispatch,
   FC,
   KeyboardEvent,
   MutableRefObject,
-  SetStateAction,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
 import { PluginSelect } from './PluginSelect';
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
-import useSessionStorage from '@/hooks/useSessionStorage';
 import { message } from 'antd';
 import { OpenAIError } from '@/utils/server';
-import { Balance } from '@/types/user';
-import { useBool } from '@/hooks/useBool';
 import { BASE_BACKEND_URL } from '@/utils/constant';
 
 interface Props {
+  token: string
   messageIsStreaming: boolean;
   model: OpenAIModel;
   conversationIsEmpty: boolean;
   prompts: Prompt[];
   onSend: (message: Message, plugin: Plugin | null) => void;
-  updateBalance: Dispatch<SetStateAction<Balance>>;
   onRegenerate: () => void;
   stopConversationRef: MutableRefObject<boolean>;
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
 }
 
 export const ChatInput: FC<Props> = ({
+  token,
   messageIsStreaming,
   model,
   conversationIsEmpty,
   prompts,
   onSend,
-  updateBalance,
   onRegenerate,
   stopConversationRef,
   textareaRef,
@@ -65,14 +61,9 @@ export const ChatInput: FC<Props> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showPluginSelect, setShowPluginSelect] = useState(false);
   const [plugin, setPlugin] = useState<Plugin | null>(null);
-  const [limited, setLimit] = useState<boolean>(true);
-  const [reloadBalance, onReloadBalance] = useBool()
-
-  // const {  } = useApi(``)
-  
-  const { getSessionItem } = useSessionStorage()
 
   const promptListRef = useRef<HTMLUListElement | null>(null);
+  const isLogin = useMemo(() => !!token, [token])
 
   const filteredPrompts = prompts.filter((prompt) =>
     prompt.name.toLowerCase().includes(promptInputValue.toLowerCase()),
@@ -107,7 +98,6 @@ export const ChatInput: FC<Props> = ({
       return;
     }
 
-    const isLogin = !!getSessionItem("TOKEN")
     // 游客状态
     if (!isLogin) {
       try {
@@ -116,7 +106,6 @@ export const ChatInput: FC<Props> = ({
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ content })
         })
   
         // 请求失败
@@ -144,9 +133,50 @@ export const ChatInput: FC<Props> = ({
     }
 
     // 用户状态
-    // if (isLogin) {
-    //   updateBalance
-    // }
+    if (isLogin) {
+      // 改成await + fetch 获取用户账户
+      try {
+        const userBalanceResponse = await fetch(`${process.env.BASE_BACKEND_URL || BASE_BACKEND_URL}/user/Balance`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Auth: token
+          },
+        })
+  
+        // 获取用户余额失败
+        if (userBalanceResponse.status !== 200) {
+          const result = await userBalanceResponse.json();
+          if (result.error) {
+            throw new OpenAIError(
+              result.error.message,
+              result.error.type,
+              result.error.param,
+              result.error.code,
+            );
+          } else {
+            const decoder = new TextDecoder();
+            throw new Error(
+              `error: ${
+                decoder.decode(result?.value) || result.statusText
+              }`,
+            );
+          }
+        } else {
+          // 获取余额正常
+          const { Data } = await userBalanceResponse.json();
+          const { totalCoin, totalCoinMore, totalCoinUse } = Data
+          const moneyRest = Number(totalCoin) + Number(totalCoinMore) - Number(totalCoinUse)
+          console.log({ totalCoin, totalCoinMore, totalCoinUse, moneyRest })
+          if (moneyRest <= -20) {
+            message.error('余额不足请充值')
+            return;
+          }
+        }
+      } catch (error) {
+        message.error('服务器异常，请重试')
+      }
+    }
 
     onSend({ role: 'user', content }, plugin);
     setContent('');

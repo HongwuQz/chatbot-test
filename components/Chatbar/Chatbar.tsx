@@ -5,13 +5,15 @@ import { Folder } from '@/types/folder';
 import { PluginKey } from '@/types/plugin';
 import { IconFolderPlus, IconMessagesOff, IconPlus } from '@tabler/icons-react';
 import { useTranslation } from 'next-i18next';
-import { FC, useEffect, useState } from 'react';
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { ChatFolders } from '../Folders/Chat/ChatFolders';
 import { Search } from '../Sidebar/Search';
 import { ChatbarSettings } from './ChatbarSettings';
 import { Conversations } from './Conversations';
 
 interface Props {
+  token: string
+  setToken: Dispatch<SetStateAction<string>>
   loading: boolean;
   conversations: Conversation[];
   lightMode: 'light' | 'dark';
@@ -41,6 +43,8 @@ interface Props {
 }
 
 export const Chatbar: FC<Props> = ({
+  token,
+  setToken,
   loading,
   conversations,
   lightMode,
@@ -200,6 +204,8 @@ export const Chatbar: FC<Props> = ({
       </div>
 
       <ChatbarSettings
+        token={token}
+        setToken={setToken}
         lightMode={lightMode}
         apiKey={apiKey}
         serverSideApiKeyIsSet={serverSideApiKeyIsSet}

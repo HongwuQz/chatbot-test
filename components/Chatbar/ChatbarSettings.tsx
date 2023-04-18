@@ -1,15 +1,17 @@
 import { SupportedExportFormats } from '@/types/export';
 import { PluginKey } from '@/types/plugin';
-import { IconFileExport, IconMoon, IconSun } from '@tabler/icons-react';
+import { IconFileExport, IconKey, IconMoon, IconSun } from '@tabler/icons-react';
 import { useTranslation } from 'next-i18next';
-import { FC } from 'react';
+import { Dispatch, FC, SetStateAction, useMemo } from 'react';
 import { Import } from '../Settings/Import';
-import { Key } from '../Settings/Key';
 import { SidebarButton } from '../Sidebar/SidebarButton';
 import { ClearConversations } from './ClearConversations';
-import { PluginKeys } from './PluginKeys';
+import { LoginInport } from './LoginInport';
+import { Balance } from './Balance';
 
 interface Props {
+  token: string
+  setToken: Dispatch<SetStateAction<string>>
   lightMode: 'light' | 'dark';
   apiKey: string;
   serverSideApiKeyIsSet: boolean;
@@ -26,21 +28,17 @@ interface Props {
 }
 
 export const ChatbarSettings: FC<Props> = ({
+  token,
+  setToken,
   lightMode,
-  apiKey,
-  serverSideApiKeyIsSet,
-  pluginKeys,
-  serverSidePluginKeysSet,
   conversationsCount,
   onToggleLightMode,
-  onApiKeyChange,
   onClearConversations,
   onExportConversations,
   onImportConversations,
-  onPluginKeyChange,
-  onClearPluginKey,
 }) => {
   const { t } = useTranslation('sidebar');
+  const isLogin = useMemo(() => !!token, [token])
 
   return (
     <div className="flex flex-col items-center space-y-1 border-t border-white/20 pt-1 text-sm">
@@ -66,17 +64,9 @@ export const ChatbarSettings: FC<Props> = ({
         }
       />
 
-      {!(serverSideApiKeyIsSet) ? (
-        <Key apiKey={apiKey} onApiKeyChange={onApiKeyChange} />
-      ) : null}
-
-      {!(serverSidePluginKeysSet) ? (
-        <PluginKeys
-          pluginKeys={pluginKeys}
-          onPluginKeyChange={onPluginKeyChange}
-          onClearPluginKey={onClearPluginKey}
-        />
-      ) : null}
+      <SidebarButton text={isLogin ? '用户信息': '游客信息'} icon={<IconKey size={18} />} onClick={() => {}} />
+      <Balance token={token} />
+      <LoginInport token={token} setToken={setToken} /> 
     </div>
   );
 };

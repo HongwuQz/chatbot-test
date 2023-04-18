@@ -5,4 +5,6 @@ export const OPENAI_API_HOST =
   process.env.OPENAI_API_HOST || 'https://api.openai.com';
 
 export const GPT4_API_HOST =
-  process.env.GPT4_API_HOST || 'https://api.openai-sb.com'
+  process.env.GPT4_API_HOST || 'https://api.openai-sb.com';
+
+export const CHATBOT_BASE_URL = 'http://39.107.45.104:7001'
