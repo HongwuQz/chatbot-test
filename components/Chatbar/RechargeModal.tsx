@@ -49,13 +49,14 @@ export const RechargeModal: React.FC<RechargeOptionsProps> = ({
           headers: {
             "Content-Type": "application/json",
             ...(token && { Auth: token }),
-            body: JSON.stringify({ money: Number(money), chargeDevice: mobileUser ? 1 : 2 })
+            data: JSON.stringify({ money: Number(money), chargeDevice: mobileUser ? 1 : 2 })
           },
         }
       );
     const { Code, Data } = await response.json();
     if (Code === 200) {
-      setBalance(Data)
+      window.location.href = Data
+      // setBalance(Data)
     }
   }, [token, isMobile]);
   

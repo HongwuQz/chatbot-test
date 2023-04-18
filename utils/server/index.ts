@@ -62,7 +62,7 @@ export const OpenAIStream = async (
         role: 'system',
         content: systemPrompt,
       },
-      ...messages,
+      ...[...messages.slice(-3)], // 限制记忆3条消息
     ],
     max_tokens: 1000,
     temperature: 1,
