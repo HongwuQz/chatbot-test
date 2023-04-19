@@ -26,6 +26,10 @@ const Login: React.FC<LoginProps> = ({ setToken, onLogin, setIsChanging, setBala
   const TInput = useMemo(() => register ? SMSCaptcha : Input, [register]) 
 
   const onFinish = () => {
+    if (!/^1[3-9]\d{9}$/.test(phone)) {
+        message.error('请输入正确的手机号码');
+        return;
+      }
    onLogin[register ? 'register' : 'login']({ phone, pass, ...(register && { code }) }).then(res => {
        if (res.Code === 200) {
         sessionStorage.setItem('TOKEN', res?.Data?.token)
