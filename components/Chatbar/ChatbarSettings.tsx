@@ -75,7 +75,7 @@ export const ChatbarSettings: FC<Props> = ({
         }
       />
 
-      <SidebarButton text={isLogin ? '用户信息': '游客信息'} icon={<IconKey size={18} />} onClick={() => {}} />
+      <SidebarButton text={isLogin ? '账户信息': '游客信息'} icon={<IconKey size={18} />} onClick={() => {}} />
       <Balance token={token} balance={balance} setBalance={setBalance} rechargeVisible={rechargeVisible} setRechargeVisible={setRechargeVisible} />
       <LoginInport token={token} setToken={setToken} setBalance={setBalance} setShowSidebar={setShowSidebar} /> 
     </div>
