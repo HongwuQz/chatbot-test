@@ -45,6 +45,7 @@ interface Props {
   onClearPluginKey: (pluginKey: PluginKey) => void;
   rechargeVisible: boolean;
   setRechargeVisible: Dispatch<SetStateAction<boolean>>;
+  setShowSidebar: Dispatch<SetStateAction<boolean>>;
 }
 
 export const Chatbar: FC<Props> = ({
@@ -77,6 +78,7 @@ export const Chatbar: FC<Props> = ({
   onPluginKeyChange,
   onClearPluginKey,
   setRechargeVisible,
+  setShowSidebar,
 }) => {
   const { t } = useTranslation('sidebar');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -232,6 +234,7 @@ export const Chatbar: FC<Props> = ({
         onImportConversations={onImportConversations}
         onPluginKeyChange={onPluginKeyChange}
         onClearPluginKey={onClearPluginKey}
+        setShowSidebar={setShowSidebar}
       />
     </div>
   );

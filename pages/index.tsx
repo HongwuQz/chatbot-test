@@ -804,6 +804,7 @@ const Home: React.FC<HomeProps> = ({
                   onImportConversations={handleImportConversations}
                   onPluginKeyChange={handlePluginKeyChange}
                   onClearPluginKey={handleClearPluginKey}
+                  setShowSidebar={setShowSidebar}
                 />
 
                 <button

@@ -3,6 +3,7 @@ import { IconRefresh } from "@tabler/icons-react";
 import { RechargeModal, RechargeOption } from "./RechargeModal";
 import { BalanceResponse } from "@/types/balance";
 import { CHATBOT_BASE_URL } from "@/utils/app/const";
+import { message } from "antd";
 
 interface Props {
   token: string
@@ -21,7 +22,7 @@ export const Balance: FC<Props> = ({ token, balance, rechargeVisible, setBalance
         method: 'POST',
         headers: {
         'Content-Type': 'application/json',
-        Auth: token,
+        ...(token && {Auth: token}),
         },
       })
     const { Code, Data } = await balanceRes.json()
@@ -45,12 +46,8 @@ export const Balance: FC<Props> = ({ token, balance, rechargeVisible, setBalance
   }
 
   useEffect(() => {
-    hanldeChargeList
-    handleRefreshBalance
-    return () => {
-      hanldeChargeList()
-      handleRefreshBalance()
-    }
+    hanldeChargeList()
+    handleRefreshBalance()
   }, [token])
 
   const total = useMemo(() => {

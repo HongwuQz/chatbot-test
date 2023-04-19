@@ -50,13 +50,15 @@ export const RechargeModal: React.FC<RechargeOptionsProps> = ({
           headers: {
             "Content-Type": "application/json",
             ...(token && { Auth: token }),
-            data: JSON.stringify({ money: Number(money), chargeDevice: mobileUser ? 1 : 2 })
           },
+          body: JSON.stringify({ money: Number(money), chargeDevice: mobileUser ? "1" : "2" })
         }
       );
     const { Code, Data } = await response.json();
     if (Code === 200) {
-      window.location.href = Data
+      const alipayRes = JSON.parse(Data)
+      const payUrl = alipayRes.alipay_trade_precreate_response.qr_code
+      window.location.href = payUrl
       getUserBalance(token).then(balanceRes => {
         if (balanceRes.Code === 200) {
           setBalance(balanceRes.Data)

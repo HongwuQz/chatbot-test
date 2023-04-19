@@ -47,7 +47,7 @@ export async function msgIntercetor(isLogin: boolean, token: string, model: Open
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Auth: token
+                ...(token && {Auth: token}),
             },
             })
     

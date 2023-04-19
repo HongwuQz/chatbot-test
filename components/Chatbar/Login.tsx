@@ -13,10 +13,11 @@ interface LoginProps {
       register: (form: LoginData) => Promise<any>;
   }
   setIsChanging: Dispatch<SetStateAction<boolean>>;
-  setBalance: Dispatch<SetStateAction<BalanceResponse>>
+  setBalance: Dispatch<SetStateAction<BalanceResponse>>;
+  setShowSidebar: Dispatch<SetStateAction<boolean>>;
 }
 
-const Login: React.FC<LoginProps> = ({ setToken, onLogin, setIsChanging, setBalance }) => {
+const Login: React.FC<LoginProps> = ({ setToken, onLogin, setIsChanging, setBalance, setShowSidebar }) => {
   const [phone, setPhone] = useState('');
   const [pass, setPass] = useState('');
   const [code, setCode] = useState('')
@@ -34,8 +35,11 @@ const Login: React.FC<LoginProps> = ({ setToken, onLogin, setIsChanging, setBala
               setBalance(res.Data)
             }
         })
+        message.success(register ? '注册成功' : '登录成功')
+        setShowSidebar(true)
+       } else {
+           message.error(res.Msg)
        }
-       message.success(register ? '注册成功' : '登录成功')
        setIsChanging(false)
    })
   }

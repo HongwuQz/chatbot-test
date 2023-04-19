@@ -1,5 +1,5 @@
 import { IconKey } from '@tabler/icons-react';
-import { Dispatch, FC, KeyboardEvent, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
+import { Dispatch, FC, KeyboardEvent, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { SidebarButton } from '../Sidebar/SidebarButton';
 import Login from './Login';
 import { login, register } from '@/utils/apis/user';
@@ -8,12 +8,13 @@ import { DEFAULT_BALANCE } from '@/pages';
 import { message } from 'antd';
 
 interface Props {
-  token: string
-  setToken: Dispatch<SetStateAction<string>>
-  setBalance: Dispatch<SetStateAction<BalanceResponse>>
+  token: string;
+  setToken: Dispatch<SetStateAction<string>>;
+  setBalance: Dispatch<SetStateAction<BalanceResponse>>;
+  setShowSidebar: Dispatch<SetStateAction<boolean>>
 }
 
-export const LoginInport: FC<Props> = ({ token, setToken, setBalance }) => {
+export const LoginInport: FC<Props> = ({ token, setToken, setBalance, setShowSidebar }) => {
 
   const [isChanging, setIsChanging] = useState(false);
 
@@ -27,12 +28,12 @@ export const LoginInport: FC<Props> = ({ token, setToken, setBalance }) => {
     }
   };
 
-  const onLogout = () => {
+  const onLogout = useCallback(() => {
     sessionStorage.removeItem("TOKEN")
     setBalance(DEFAULT_BALANCE)
     setToken('')
     message.success("注销成功")
-  }
+  }, [sessionStorage, DEFAULT_BALANCE])
 
   useEffect(() => {
     const handleMouseDown = (e: MouseEvent) => {
@@ -79,7 +80,7 @@ export const LoginInport: FC<Props> = ({ token, setToken, setBalance }) => {
                 role="dialog"
               >
                 <div className="mb-2 flex justify-center text-xl">登录</div>
-                <Login setToken={setToken} onLogin={{login, register}} setIsChanging={setIsChanging} setBalance={setBalance} />
+                <Login setToken={setToken} onLogin={{login, register}} setIsChanging={setIsChanging} setBalance={setBalance} setShowSidebar={setShowSidebar} />
               </div>
             </div>
           </div>

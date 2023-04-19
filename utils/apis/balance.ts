@@ -1,6 +1,7 @@
 import { ApiResult } from "@/types/data";
 import { CHATBOT_BASE_URL } from "@/utils/app/const";
 import { BalanceResponse } from "@/types/balance";
+import { message } from "antd";
 
 export const getUserBalance = (token: string): Promise<ApiResult<BalanceResponse>> => {
     return new Promise((resolve, reject) => {
@@ -9,10 +10,16 @@ export const getUserBalance = (token: string): Promise<ApiResult<BalanceResponse
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
-            Auth: token,
+            ...(token && {Auth: token}),
             },
-        }).then(res => {
-            res.status === 200 ? resolve(res.json()) : reject(res.json())
+        }).then(async res => {
+            const result = await res.json()
+            if (res.status === 200) {
+                resolve(result)
+            } else {
+                message.error(result.Msg)
+                reject(result)
+            }
         }, rej => reject(rej));
         } catch (error) {
         reject(error)
