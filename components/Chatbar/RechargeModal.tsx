@@ -4,6 +4,7 @@ import { NumberInput } from "./NumberInput";
 import { BalanceResponse } from "@/types/balance";
 import { CHATBOT_BASE_URL } from "@/utils/app/const";
 import { getUserBalance } from "@/utils/apis/balance";
+import QRCode from 'qrcode.react';
 
 export interface RechargeOption {
   money: number;
@@ -56,9 +57,28 @@ export const RechargeModal: React.FC<RechargeOptionsProps> = ({
       );
     const { Code, Data } = await response.json();
     if (Code === 200) {
-      const alipayRes = JSON.parse(Data)
-      const payUrl = alipayRes.alipay_trade_precreate_response.qr_code
-      window.location.href = payUrl
+      const alipayRes = JSON.parse(Data);
+      const payUrl = alipayRes.alipay_trade_precreate_response.qr_code;
+      
+      if (mobileUser) {
+        // 移动设备直接唤醒支付宝进行付款
+        window.location.href = payUrl;
+      } else {
+        Modal.confirm({
+          content: (
+            <div className="text-center">
+              <QRCode value={payUrl} size={200} />
+              <p>请使用支付宝扫描二维码完成付款</p>
+            </div>
+          ),
+          icon: null,
+          centered: true, // 将弹窗居中显示
+          closable: true, // 显示关闭按钮
+          okButtonProps: { style: { display: "none" } },
+          cancelButtonProps: { style: { display: "none" } },
+          width: 270,
+        });
+      }
       getUserBalance(token).then(balanceRes => {
         if (balanceRes.Code === 200) {
           setBalance(balanceRes.Data)
