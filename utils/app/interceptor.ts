@@ -2,8 +2,9 @@ import { message } from "antd";
 import { BASE_BACKEND_URL } from "../constant";
 import { OpenAIError } from "../server";
 import { OpenAIModel, OpenAIModelID } from "@/types/openai";
+import { Dispatch, SetStateAction } from "react";
 
-export async function msgIntercetor(isLogin: boolean, token: string, model: OpenAIModel) {
+export async function msgIntercetor(isLogin: boolean, token: string, model: OpenAIModel, setVisible: Dispatch<SetStateAction<boolean>>) {
     // 游客状态
     if (!isLogin) {
         try {
@@ -76,6 +77,7 @@ export async function msgIntercetor(isLogin: boolean, token: string, model: Open
             const questionCost = model.id === OpenAIModelID.GPT_3_5 ? 1 : 30
             if (moneyRest < questionCost) {
                 message.error('余额不足请充值')
+                setVisible(true)
                 return;
             }
             }

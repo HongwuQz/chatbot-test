@@ -11,9 +11,11 @@ import {
 } from '@tabler/icons-react';
 import { useTranslation } from 'next-i18next';
 import {
+  Dispatch,
   FC,
   KeyboardEvent,
   MutableRefObject,
+  SetStateAction,
   useCallback,
   useEffect,
   useMemo,
@@ -36,6 +38,7 @@ interface Props {
   prompts: Prompt[];
   onSend: (message: Message, plugin: Plugin | null) => void;
   onRegenerate: () => void;
+  setRechargeVisible: Dispatch<SetStateAction<boolean>>
   stopConversationRef: MutableRefObject<boolean>;
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
 }
@@ -48,6 +51,7 @@ export const ChatInput: FC<Props> = ({
   prompts,
   onSend,
   onRegenerate,
+  setRechargeVisible,
   stopConversationRef,
   textareaRef,
 }) => {
@@ -99,7 +103,7 @@ export const ChatInput: FC<Props> = ({
       return;
     }
 
-    const interceptor = await msgIntercetor(isLogin, token, model)
+    const interceptor = await msgIntercetor(isLogin, token, model, setRechargeVisible)
 
     if(!interceptor) {
       return

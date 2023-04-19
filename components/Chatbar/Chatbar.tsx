@@ -43,6 +43,8 @@ interface Props {
   onImportConversations: (data: SupportedExportFormats) => void;
   onPluginKeyChange: (pluginKey: PluginKey) => void;
   onClearPluginKey: (pluginKey: PluginKey) => void;
+  rechargeVisible: boolean;
+  setRechargeVisible: Dispatch<SetStateAction<boolean>>;
 }
 
 export const Chatbar: FC<Props> = ({
@@ -58,6 +60,7 @@ export const Chatbar: FC<Props> = ({
   serverSidePluginKeysSet,
   folders,
   balance,
+  rechargeVisible,
   setBalance,
   onCreateFolder,
   onDeleteFolder,
@@ -73,6 +76,7 @@ export const Chatbar: FC<Props> = ({
   onImportConversations,
   onPluginKeyChange,
   onClearPluginKey,
+  setRechargeVisible,
 }) => {
   const { t } = useTranslation('sidebar');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -211,6 +215,8 @@ export const Chatbar: FC<Props> = ({
       <ChatbarSettings
         token={token}
         setToken={setToken}
+        rechargeVisible={rechargeVisible}
+        setRechargeVisible={setRechargeVisible}
         balance={balance}
         lightMode={lightMode}
         apiKey={apiKey}

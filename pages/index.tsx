@@ -79,6 +79,7 @@ const Home: React.FC<HomeProps> = ({
   const [lightMode, setLightMode] = useState<'dark' | 'light'>('dark');
   const [messageIsStreaming, setMessageIsStreaming] = useState<boolean>(false);
   const [balance, setBalance] = useState<BalanceResponse>(DEFAULT_BALANCE);
+  const [rechargeVisible, setRechargeVisible] = useState<boolean>(false);
 
   // const [modelError, setModelError] = useState<ErrorMessage | null>(null);
   // const [models, setModels] = useState<OpenAIModel[]>([]);
@@ -639,7 +640,7 @@ const Home: React.FC<HomeProps> = ({
   };
 
   const asyncSend = useCallback(async (model: OpenAIModel, currentMessage: Message) => {
-    const interceptor = await msgIntercetor(!token, token, model)
+    const interceptor = await msgIntercetor(!token, token, model , setRechargeVisible)
     if(!interceptor) {
       return
     }
@@ -776,6 +777,8 @@ const Home: React.FC<HomeProps> = ({
                 <Chatbar
                   token={token}
                   setToken={setToken}
+                  rechargeVisible={rechargeVisible}
+                  setRechargeVisible={setRechargeVisible}
                   balance={balance}
                   setBalance={setBalance}
                   loading={messageIsStreaming}
@@ -831,6 +834,7 @@ const Home: React.FC<HomeProps> = ({
                 apiKey={apiKey}
                 serverSideApiKeyIsSet={serverSideApiKeyIsSet}
                 defaultModelId={defaultModelId}
+                setRechargeVisible={setRechargeVisible}
                 // modelError={modelError}
                 models={Object.values(OpenAIModels)}
                 loading={loading}

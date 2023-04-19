@@ -7,13 +7,13 @@ import { CHATBOT_BASE_URL } from "@/utils/app/const";
 interface Props {
   token: string
   balance: BalanceResponse
+  rechargeVisible: boolean
   setBalance: Dispatch<SetStateAction<BalanceResponse>>
+  setRechargeVisible: Dispatch<SetStateAction<boolean>>
 }
 
-export const Balance: FC<Props> = ({ token, balance, setBalance }) => {
+export const Balance: FC<Props> = ({ token, balance, rechargeVisible, setBalance, setRechargeVisible }) => {
   const isLogin = useMemo(() => !!token, [token])
-
-  const [isRechargeModalOpen, setIsRechargeModalOpen] = useState(false);
   const [rechargeOptions, setRechargeOptions] = useState<RechargeOption[]>([])
 
   const handleRefreshBalance = async () => {
@@ -77,7 +77,7 @@ export const Balance: FC<Props> = ({ token, balance, setBalance }) => {
           <div>累计使用：{balance.totalCoinUse}</div>
         </div>
         <button
-          onClick={() => setIsRechargeModalOpen(true)}
+          onClick={() => setRechargeVisible(true)}
           disabled={!isLogin}
           className="mt-2 text-blue-500 text-sm font-medium"
         >
@@ -85,7 +85,7 @@ export const Balance: FC<Props> = ({ token, balance, setBalance }) => {
         </button>
       </div>
       {/* 充值弹窗 */}
-      <RechargeModal token={token} setBalance={setBalance} visible={isRechargeModalOpen} options={rechargeOptions} onClose={() => setIsRechargeModalOpen(!isRechargeModalOpen)} />
+      <RechargeModal token={token} setBalance={setBalance} visible={rechargeVisible} options={rechargeOptions} onClose={() => setRechargeVisible(!rechargeVisible)} />
     </>
   );
 };

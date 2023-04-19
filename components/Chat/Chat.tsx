@@ -4,11 +4,13 @@ import { OpenAIModel, OpenAIModelID } from '@/types/openai';
 import { Plugin } from '@/types/plugin';
 import { Prompt } from '@/types/prompt';
 import { throttle } from '@/utils';
-import { IconArrowDown, IconClearAll, IconSettings } from '@tabler/icons-react';
+import { IconArrowDown, IconClearAll } from '@tabler/icons-react';
 import { useTranslation } from 'next-i18next';
 import {
+  Dispatch,
   FC,
   MutableRefObject,
+  SetStateAction,
   memo,
   useCallback,
   useEffect,
@@ -34,6 +36,7 @@ interface Props {
   // modelError: ErrorMessage | null;
   loading: boolean;
   prompts: Prompt[];
+  setRechargeVisible: Dispatch<SetStateAction<boolean>>
   onSend: (
     message: Message,
     deleteCount: number,
@@ -59,6 +62,7 @@ export const Chat: FC<Props> = memo(
     // modelError,
     loading,
     prompts,
+    setRechargeVisible,
     onSend,
     onUpdateConversation,
     onEditMessage,
@@ -299,6 +303,7 @@ export const Chat: FC<Props> = memo(
               conversationIsEmpty={conversation.messages.length === 0}
               model={conversation.model}
               prompts={prompts}
+              setRechargeVisible={setRechargeVisible}
               onSend={(message, plugin) => {
                 setCurrentMessage(message);
                 onSend(message, 0, plugin);

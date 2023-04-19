@@ -11,8 +11,8 @@ import { Balance } from './Balance';
 import { BalanceResponse } from '@/types/balance';
 
 interface Props {
-  token: string
-  setToken: Dispatch<SetStateAction<string>>
+  token: string;
+  setToken: Dispatch<SetStateAction<string>>;
   lightMode: 'light' | 'dark';
   apiKey: string;
   serverSideApiKeyIsSet: boolean;
@@ -26,8 +26,10 @@ interface Props {
   onImportConversations: (data: SupportedExportFormats) => void;
   onPluginKeyChange: (pluginKey: PluginKey) => void;
   onClearPluginKey: (pluginKey: PluginKey) => void;
-  balance: BalanceResponse
-  setBalance: Dispatch<SetStateAction<BalanceResponse>>
+  balance: BalanceResponse;
+  setBalance: Dispatch<SetStateAction<BalanceResponse>>;
+  rechargeVisible: boolean;
+  setRechargeVisible: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ChatbarSettings: FC<Props> = ({
@@ -40,7 +42,9 @@ export const ChatbarSettings: FC<Props> = ({
   onExportConversations,
   onImportConversations,
   balance,
-  setBalance
+  setBalance,
+  rechargeVisible,
+  setRechargeVisible
 }) => {
   const { t } = useTranslation('sidebar');
   const isLogin = useMemo(() => !!token, [token])
@@ -70,7 +74,7 @@ export const ChatbarSettings: FC<Props> = ({
       />
 
       <SidebarButton text={isLogin ? '用户信息': '游客信息'} icon={<IconKey size={18} />} onClick={() => {}} />
-      <Balance token={token} balance={balance} setBalance={setBalance} />
+      <Balance token={token} balance={balance} setBalance={setBalance} rechargeVisible={rechargeVisible} setRechargeVisible={setRechargeVisible} />
       <LoginInport token={token} setToken={setToken} setBalance={setBalance} /> 
     </div>
   );
