@@ -33,7 +33,10 @@ export const RechargeModal: React.FC<RechargeOptionsProps> = ({
   const onCustomMoneyInput = useCallback((money: string) => {
     setCustomMoney(money)
   }, [])
-
+  const handleModalClose = async () => {
+    await handleClose();
+    window.location.reload(); // 刷新页面
+  };
   const isMobile = useCallback(() => {
     const userAgent =
       typeof window.navigator === 'undefined' ? '' : navigator.userAgent;
@@ -69,14 +72,20 @@ export const RechargeModal: React.FC<RechargeOptionsProps> = ({
             <div className="text-center">
               <QRCode value={payUrl} size={200} />
               <p>请使用支付宝扫描二维码完成付款</p>
+              <p>完成付款OK刷新余额</p>
             </div>
           ),
           icon: null,
           centered: true, // 将弹窗居中显示
           closable: true, // 显示关闭按钮
-          okButtonProps: { style: { display: "none" } },
+          okButtonProps: { style: { backgroundColor: '#1890ff', borderColor: '#1890ff' }, },
           cancelButtonProps: { style: { display: "none" } },
           width: 270,
+          onOk() { // OK 按钮点击事件，一般不需要处理
+            console.log('OK')
+            window.location.reload();
+          },
+          
         });
       }
       getUserBalance(token).then(balanceRes => {
