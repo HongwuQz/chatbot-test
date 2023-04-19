@@ -1,14 +1,14 @@
 import { message } from "antd";
-import { BASE_BACKEND_URL } from "../constant";
 import { OpenAIError } from "../server";
 import { OpenAIModel, OpenAIModelID } from "@/types/openai";
 import { Dispatch, SetStateAction } from "react";
+import { CHATBOT_BASE_URL } from "./const";
 
 export async function msgIntercetor(isLogin: boolean, token: string, model: OpenAIModel, setVisible: Dispatch<SetStateAction<boolean>>) {
     // 游客状态
     if (!isLogin) {
         try {
-            const visitorLimitResponse = await fetch(`${process.env.BASE_BACKEND_URL || BASE_BACKEND_URL}/sample/ChatSend`, {
+            const visitorLimitResponse = await fetch(`${CHATBOT_BASE_URL}/sample/ChatSend`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export async function msgIntercetor(isLogin: boolean, token: string, model: Open
         if (isLogin) {
         // 改成await + fetch 获取用户账户
         try {
-            const userBalanceResponse = await fetch(`${process.env.BASE_BACKEND_URL || BASE_BACKEND_URL}/user/Balance`, {
+            const userBalanceResponse = await fetch(`${CHATBOT_BASE_URL}/user/Balance`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

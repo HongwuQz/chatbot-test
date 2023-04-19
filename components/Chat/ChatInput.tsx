@@ -3,8 +3,6 @@ import { OpenAIModel } from '@/types/openai';
 import { Plugin } from '@/types/plugin';
 import { Prompt } from '@/types/prompt';
 import {
-  IconBolt,
-  IconBrandGoogle,
   IconPlayerStop,
   IconRepeat,
   IconSend,
@@ -22,12 +20,8 @@ import {
   useRef,
   useState,
 } from 'react';
-import { PluginSelect } from './PluginSelect';
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
-import { message } from 'antd';
-import { OpenAIError } from '@/utils/server';
-import { BASE_BACKEND_URL } from '@/utils/constant';
 import { msgIntercetor } from '@/utils/app/interceptor';
 
 interface Props {
