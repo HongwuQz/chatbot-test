@@ -33,10 +33,7 @@ export const RechargeModal: React.FC<RechargeOptionsProps> = ({
   const onCustomMoneyInput = useCallback((money: string) => {
     setCustomMoney(money)
   }, [])
-  const handleModalClose = async () => {
-    await handleClose();
-    window.location.reload(); // 刷新页面
-  };
+
   const isMobile = useCallback(() => {
     const userAgent =
       typeof window.navigator === 'undefined' ? '' : navigator.userAgent;
