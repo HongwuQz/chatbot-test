@@ -57,6 +57,7 @@ export const Balance: FC<Props> = ({ token, balance, rechargeVisible, setBalance
 
   return (
     <>
+    {isLogin && (
       <div className="flex flex-col text-sm text-gray-500" style={{marginLeft:'-30%'}}>
         <div className="flex items-center">
           <span className="text-gray-200 text-sm font-medium">余额：</span>
@@ -80,7 +81,7 @@ export const Balance: FC<Props> = ({ token, balance, rechargeVisible, setBalance
         >
           <span {...(isLogin ? {} : {style: { textDecoration: 'line-through' }})}>{`充值${isLogin ? '' : '(登录后启用)'}`}</span>
         </button>
-      </div>
+      </div>)}
       {/* 充值弹窗 */}
       <RechargeModal token={token} setBalance={setBalance} visible={rechargeVisible} options={rechargeOptions} onClose={() => setRechargeVisible(!rechargeVisible)} />
     </>
