@@ -13,6 +13,7 @@ export async function msgIntercetor(isLogin: boolean, token: string, model: Open
             headers: {
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify({ content: '发送了一条消息' }),
             })
     
             // 请求失败
