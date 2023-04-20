@@ -30,6 +30,8 @@ interface Props {
   setBalance: Dispatch<SetStateAction<BalanceResponse>>;
   rechargeVisible: boolean;
   setRechargeVisible: Dispatch<SetStateAction<boolean>>;
+  loginVisible: boolean;
+  setLoginVisible: Dispatch<SetStateAction<boolean>>;
   setShowSidebar: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -46,6 +48,8 @@ export const ChatbarSettings: FC<Props> = ({
   setBalance,
   rechargeVisible,
   setRechargeVisible,
+  loginVisible,
+  setLoginVisible,
   setShowSidebar,
 }) => {
   const { t } = useTranslation('sidebar');
@@ -77,7 +81,7 @@ export const ChatbarSettings: FC<Props> = ({
 
       <SidebarButton text={isLogin ? '账户信息': '游客信息'} icon={<IconKey size={18} />} onClick={() => {}} />
       <Balance token={token} balance={balance} setBalance={setBalance} rechargeVisible={rechargeVisible} setRechargeVisible={setRechargeVisible} />
-      <LoginInport token={token} setToken={setToken} setBalance={setBalance} setShowSidebar={setShowSidebar} /> 
+      <LoginInport token={token} setToken={setToken} setBalance={setBalance} setShowSidebar={setShowSidebar} loginVisible={loginVisible} setLoginVisible={setLoginVisible} /> 
     </div>
   );
 };

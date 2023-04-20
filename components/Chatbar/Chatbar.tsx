@@ -45,6 +45,8 @@ interface Props {
   onClearPluginKey: (pluginKey: PluginKey) => void;
   rechargeVisible: boolean;
   setRechargeVisible: Dispatch<SetStateAction<boolean>>;
+  loginVisible: boolean;
+  setLoginVisible: Dispatch<SetStateAction<boolean>>;
   setShowSidebar: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -62,6 +64,8 @@ export const Chatbar: FC<Props> = ({
   folders,
   balance,
   rechargeVisible,
+  loginVisible,
+  setLoginVisible,
   setBalance,
   onCreateFolder,
   onDeleteFolder,
@@ -223,6 +227,8 @@ export const Chatbar: FC<Props> = ({
         lightMode={lightMode}
         apiKey={apiKey}
         setBalance={setBalance}
+        loginVisible={loginVisible}
+        setLoginVisible={setLoginVisible}
         serverSideApiKeyIsSet={serverSideApiKeyIsSet}
         pluginKeys={pluginKeys}
         serverSidePluginKeysSet={serverSidePluginKeysSet}

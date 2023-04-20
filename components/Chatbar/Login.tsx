@@ -12,12 +12,13 @@ interface LoginProps {
       login: (form: LoginData) => Promise<any>;
       register: (form: LoginData) => Promise<any>;
   }
-  setIsChanging: Dispatch<SetStateAction<boolean>>;
   setBalance: Dispatch<SetStateAction<BalanceResponse>>;
   setShowSidebar: Dispatch<SetStateAction<boolean>>;
+  loginVisible: boolean;
+  setLoginVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-const Login: React.FC<LoginProps> = ({ setToken, onLogin, setIsChanging, setBalance, setShowSidebar }) => {
+const Login: React.FC<LoginProps> = ({ setToken, onLogin, setLoginVisible, setBalance, setShowSidebar }) => {
   const [phone, setPhone] = useState('');
   const [pass, setPass] = useState('');
   const [code, setCode] = useState('')
@@ -44,7 +45,7 @@ const Login: React.FC<LoginProps> = ({ setToken, onLogin, setIsChanging, setBala
        } else {
            message.error(res.Msg)
        }
-       setIsChanging(false)
+       setLoginVisible(false)
    })
   }
 

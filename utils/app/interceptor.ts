@@ -4,7 +4,13 @@ import { OpenAIModel, OpenAIModelID } from "@/types/openai";
 import { Dispatch, SetStateAction } from "react";
 import { CHATBOT_BASE_URL } from "./const";
 
-export async function msgIntercetor(isLogin: boolean, token: string, model: OpenAIModel, setVisible: Dispatch<SetStateAction<boolean>>) {
+export async function msgIntercetor(
+    isLogin: boolean,
+    token: string,
+    model: OpenAIModel,
+    setRechargeVisible: Dispatch<SetStateAction<boolean>>,
+    setLoginVisible: Dispatch<SetStateAction<boolean>>
+    ) {
     // 游客状态
     if (!isLogin) {
         try {
@@ -35,8 +41,10 @@ export async function msgIntercetor(isLogin: boolean, token: string, model: Open
             }
             } else {
                 const { Code, Msg } = await visitorLimitResponse.json()
+                const Errormessage = Msg as string
                 if (Code !== 200) {
-                    message.error(Msg)
+                    message.error(Errormessage)
+                    Errormessage.startsWith('今天访问已超') && setLoginVisible(true)
                 }
             }
         } catch (error) {
@@ -82,7 +90,7 @@ export async function msgIntercetor(isLogin: boolean, token: string, model: Open
             const questionCost = model.id === OpenAIModelID.GPT_3_5 ? 1 : 30
             if (moneyRest < questionCost) {
                 message.error('余额不足请充值')
-                setVisible(true)
+                setRechargeVisible(true)
                 return;
             }
             }

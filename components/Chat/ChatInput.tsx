@@ -35,6 +35,7 @@ interface Props {
   setRechargeVisible: Dispatch<SetStateAction<boolean>>
   stopConversationRef: MutableRefObject<boolean>;
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
+  setLoginVisible: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ChatInput: FC<Props> = ({
@@ -46,6 +47,7 @@ export const ChatInput: FC<Props> = ({
   onSend,
   onRegenerate,
   setRechargeVisible,
+  setLoginVisible,
   stopConversationRef,
   textareaRef,
 }) => {
@@ -97,7 +99,7 @@ export const ChatInput: FC<Props> = ({
       return;
     }
 
-    const interceptor = await msgIntercetor(isLogin, token, model, setRechargeVisible)
+    const interceptor = await msgIntercetor(isLogin, token, model, setRechargeVisible, setLoginVisible)
 
     if(!interceptor) {
       return

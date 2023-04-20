@@ -1,5 +1,5 @@
 import { IconKey } from '@tabler/icons-react';
-import { Dispatch, FC, KeyboardEvent, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Dispatch, FC, KeyboardEvent, SetStateAction, useCallback, useEffect, useMemo, useRef } from 'react';
 import { SidebarButton } from '../Sidebar/SidebarButton';
 import Login from './Login';
 import { login, register } from '@/utils/apis/user';
@@ -12,11 +12,11 @@ interface Props {
   setToken: Dispatch<SetStateAction<string>>;
   setBalance: Dispatch<SetStateAction<BalanceResponse>>;
   setShowSidebar: Dispatch<SetStateAction<boolean>>
+  loginVisible: boolean;
+  setLoginVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-export const LoginInport: FC<Props> = ({ token, setToken, setBalance, setShowSidebar }) => {
-
-  const [isChanging, setIsChanging] = useState(false);
+export const LoginInport: FC<Props> = ({ token, setToken, setBalance, setShowSidebar, loginVisible, setLoginVisible }) => {
 
   const modalRef = useRef<HTMLDivElement>(null);
   const isLogin = useMemo(() => !token, [token])
@@ -24,7 +24,7 @@ export const LoginInport: FC<Props> = ({ token, setToken, setBalance, setShowSid
   const handleEnter = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      setIsChanging(false);
+      setLoginVisible(false);
     }
   };
 
@@ -44,7 +44,7 @@ export const LoginInport: FC<Props> = ({ token, setToken, setBalance, setShowSid
 
     const handleMouseUp = (e: MouseEvent) => {
       window.removeEventListener('mouseup', handleMouseUp);
-      setIsChanging(false);
+      setLoginVisible(false);
     };
 
     window.addEventListener('mousedown', handleMouseDown);
@@ -59,10 +59,10 @@ export const LoginInport: FC<Props> = ({ token, setToken, setBalance, setShowSid
       <SidebarButton
         text={isLogin ? '登录/注册' : '注销'}
         icon={<IconKey size={18} />}
-        onClick={() => isLogin ? setIsChanging(true) : onLogout()}
+        onClick={() => isLogin ? setLoginVisible(true) : onLogout()}
       />
 
-      {isChanging && (
+      {loginVisible && (
         <div
           className="z-100 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
           onKeyDown={handleEnter}
@@ -80,7 +80,7 @@ export const LoginInport: FC<Props> = ({ token, setToken, setBalance, setShowSid
                 role="dialog"
               >
                 <div className="mb-2 flex justify-center text-xl">登录</div>
-                <Login setToken={setToken} onLogin={{login, register}} setIsChanging={setIsChanging} setBalance={setBalance} setShowSidebar={setShowSidebar} />
+                <Login setToken={setToken} onLogin={{login, register}} loginVisible={loginVisible} setLoginVisible={setLoginVisible} setBalance={setBalance} setShowSidebar={setShowSidebar} />
               </div>
             </div>
           </div>

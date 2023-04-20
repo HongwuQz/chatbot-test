@@ -36,7 +36,8 @@ interface Props {
   // modelError: ErrorMessage | null;
   loading: boolean;
   prompts: Prompt[];
-  setRechargeVisible: Dispatch<SetStateAction<boolean>>
+  setRechargeVisible: Dispatch<SetStateAction<boolean>>;
+  setLoginVisible: Dispatch<SetStateAction<boolean>>;
   onSend: (
     message: Message,
     deleteCount: number,
@@ -67,6 +68,7 @@ export const Chat: FC<Props> = memo(
     onUpdateConversation,
     onEditMessage,
     stopConversationRef,
+    setLoginVisible,
   }) => {
     const { t } = useTranslation('chat');
     const [currentMessage, setCurrentMessage] = useState<Message>();
@@ -304,6 +306,7 @@ export const Chat: FC<Props> = memo(
               conversationIsEmpty={conversation.messages.length === 0}
               model={conversation.model}
               prompts={prompts}
+              setLoginVisible={setLoginVisible}
               setRechargeVisible={setRechargeVisible}
               onSend={(message, plugin) => {
                 setCurrentMessage(message);

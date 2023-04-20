@@ -80,6 +80,7 @@ const Home: React.FC<HomeProps> = ({
   const [messageIsStreaming, setMessageIsStreaming] = useState<boolean>(false);
   const [balance, setBalance] = useState<BalanceResponse>(DEFAULT_BALANCE);
   const [rechargeVisible, setRechargeVisible] = useState<boolean>(false);
+  const [loginVisible, setLoginVisible] = useState<boolean>(false);
 
   // const [modelError, setModelError] = useState<ErrorMessage | null>(null);
   // const [models, setModels] = useState<OpenAIModel[]>([]);
@@ -640,12 +641,12 @@ const Home: React.FC<HomeProps> = ({
   };
 
   const asyncSend = useCallback(async (model: OpenAIModel, currentMessage: Message) => {
-    const interceptor = await msgIntercetor(!token, token, model , setRechargeVisible)
+    const interceptor = await msgIntercetor(!token, token, model, setRechargeVisible, setLoginVisible)
     if(!interceptor) {
       return
     }
     handleSend(currentMessage)
-  }, [])
+  }, [handleSend])
 
   // EFFECTS  --------------------------------------------
 
@@ -784,6 +785,8 @@ const Home: React.FC<HomeProps> = ({
                   loading={messageIsStreaming}
                   conversations={conversations}
                   lightMode={lightMode}
+                  loginVisible={loginVisible}
+                  setLoginVisible={setLoginVisible}
                   selectedConversation={selectedConversation}
                   apiKey={apiKey}
                   serverSideApiKeyIsSet={serverSideApiKeyIsSet}
@@ -835,6 +838,7 @@ const Home: React.FC<HomeProps> = ({
                 apiKey={apiKey}
                 serverSideApiKeyIsSet={serverSideApiKeyIsSet}
                 defaultModelId={defaultModelId}
+                setLoginVisible={setLoginVisible}
                 setRechargeVisible={setRechargeVisible}
                 // modelError={modelError}
                 models={Object.values(OpenAIModels)}
