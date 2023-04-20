@@ -45,6 +45,7 @@ export async function msgIntercetor(
                 if (Code !== 200) {
                     message.error(Errormessage)
                     setLoginVisible(true)
+                    return
                 }
             }
             return true
