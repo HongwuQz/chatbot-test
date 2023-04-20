@@ -5,12 +5,12 @@ import { Dispatch, SetStateAction } from "react";
 import { CHATBOT_BASE_URL } from "./const";
 
 export async function msgIntercetor(
-    isLogin: boolean,
-    token: string,
-    model: OpenAIModel,
-    setRechargeVisible: Dispatch<SetStateAction<boolean>>,
-    setLoginVisible: Dispatch<SetStateAction<boolean>>
-    ) {
+  isLogin: boolean,
+  token: string,
+  model: OpenAIModel,
+  setRechargeVisible: Dispatch<SetStateAction<boolean>>,
+  setLoginVisible: Dispatch<SetStateAction<boolean>>
+) {
     // 游客状态
     if (!isLogin) {
         try {
@@ -47,14 +47,11 @@ export async function msgIntercetor(
                     Errormessage.startsWith('今天访问已经超过') && setLoginVisible(true)
                 }
             }
+            return true
         } catch (error) {
             message.error('服务器异常，请重试')
         }
-        }
-    
-        // 用户状态
-        if (isLogin) {
-        // 改成await + fetch 获取用户账户
+    } else {
         try {
             const userBalanceResponse = await fetch(`${CHATBOT_BASE_URL}/user/Balance`, {
             method: 'POST',
@@ -97,7 +94,6 @@ export async function msgIntercetor(
         } catch (error) {
             message.error('服务器异常，请重试')
         }
-
         return true
     }
 }

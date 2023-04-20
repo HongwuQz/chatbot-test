@@ -101,6 +101,7 @@ export const ChatInput: FC<Props> = ({
 
     const interceptor = await msgIntercetor(isLogin, token, model, setRechargeVisible, setLoginVisible)
 
+    console.log('拦截系统通过',{ interceptor })
     if(!interceptor) {
       return
     }
