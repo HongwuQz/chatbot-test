@@ -44,7 +44,8 @@ export async function msgIntercetor(
                 const Errormessage = Msg as string
                 if (Code !== 200) {
                     message.error(Errormessage)
-                    Errormessage.startsWith('今天访问已经超过') && setLoginVisible(true)
+                    setLoginVisible(true)
+                    return
                 }
             }
             return true
