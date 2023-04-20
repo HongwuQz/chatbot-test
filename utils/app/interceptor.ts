@@ -9,13 +9,12 @@ export async function msgIntercetor(isLogin: boolean, token: string, model: Open
     if (!isLogin) {
         try {
             const visitorLimitResponse = await fetch(`${CHATBOT_BASE_URL}/sample/ChatSend`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ content: '发送了一条消息' }),
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content: '游客发送了一条消息' }),
             })
-    
             // 请求失败
             if (visitorLimitResponse.status !== 200) {
             const result = await visitorLimitResponse.json();
@@ -34,6 +33,11 @@ export async function msgIntercetor(isLogin: boolean, token: string, model: Open
                 }`,
                 );
             }
+            } else {
+                const { Code, Msg } = await visitorLimitResponse.json()
+                if (Code !== 200) {
+                    message.error(Msg)
+                }
             }
         } catch (error) {
             message.error('服务器异常，请重试')

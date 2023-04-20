@@ -275,15 +275,16 @@ export const Chat: FC<Props> = memo(
                       <IconClearAll size={18} />
                     </button>
                   </div>
-
-                  {conversation.messages.map((message, index) => (
-                    <ChatMessage
-                      key={index}
-                      message={message}
-                      messageIndex={index}
-                      onEditMessage={onEditMessage}
-                    />
-                  ))}
+                  <div className='mt-[54px]'>
+                    {conversation.messages.map((message, index) => (
+                      <ChatMessage
+                        key={index}
+                        message={message}
+                        messageIndex={index}
+                        onEditMessage={onEditMessage}
+                      />
+                    ))}
+                  </div>
 
                   {loading && <ChatLoader />}
 
