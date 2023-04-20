@@ -14,6 +14,7 @@ import {
   memo,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -80,6 +81,9 @@ export const Chat: FC<Props> = memo(
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    const isLogin = useMemo(() => !!token, [token])
+    const publishModels = useMemo(() => isLogin ? models : models.filter(item => item.id === OpenAIModelID.GPT_3_5), [models, isLogin])
 
     const scrollToBottom = useCallback(() => {
       if (autoScrollEnabled) {
@@ -259,7 +263,7 @@ export const Chat: FC<Props> = memo(
                     <div className="flex h-full flex-col space-y-4 border-b border-neutral-200 dark:border-neutral-600 md:rounded-lg md:border">
                         <ModelSelect
                           model={conversation.model}
-                          models={models}
+                          models={publishModels}
                           showTitle={false}
                           defaultModelId={defaultModelId}
                           onModelChange={(model) =>
