@@ -62,7 +62,8 @@ export const CodeBlock: FC<Props> = memo(({ language, value }) => {
       <div className="flex items-center justify-between py-1.5 px-4">
         <span className="text-xs lowercase text-white">{language}</span>
 
-        <div className="flex items-center">
+        {/* 复制下载功能 */}
+        {/* <div className="flex items-center">
           <button
             className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-white"
             onClick={copyToClipboard}
@@ -80,7 +81,7 @@ export const CodeBlock: FC<Props> = memo(({ language, value }) => {
           >
             <IconDownload size={18} />
           </button>
-        </div>
+        </div> */}
       </div>
 
       <SyntaxHighlighter
