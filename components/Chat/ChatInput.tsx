@@ -32,7 +32,8 @@ interface Props {
   prompts: Prompt[];
   onSend: (message: Message, plugin: Plugin | null) => void;
   onRegenerate: () => void;
-  setRechargeVisible: Dispatch<SetStateAction<boolean>>
+  setRechargeVisible: Dispatch<SetStateAction<boolean>>;
+  setShowSidebar: Dispatch<SetStateAction<boolean>>;
   stopConversationRef: MutableRefObject<boolean>;
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
   setLoginVisible: Dispatch<SetStateAction<boolean>>;
@@ -48,6 +49,7 @@ export const ChatInput: FC<Props> = ({
   onRegenerate,
   setRechargeVisible,
   setLoginVisible,
+  setShowSidebar,
   stopConversationRef,
   textareaRef,
 }) => {
@@ -99,7 +101,7 @@ export const ChatInput: FC<Props> = ({
       return;
     }
 
-    const interceptor = await msgIntercetor(isLogin, token, model, setRechargeVisible, setLoginVisible)
+    const interceptor = await msgIntercetor(isLogin, token, model, setRechargeVisible, setLoginVisible, setShowSidebar)
 
     console.log('拦截系统通过',{ interceptor })
     if(!interceptor) {

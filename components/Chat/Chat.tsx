@@ -39,6 +39,7 @@ interface Props {
   prompts: Prompt[];
   setRechargeVisible: Dispatch<SetStateAction<boolean>>;
   setLoginVisible: Dispatch<SetStateAction<boolean>>;
+  setShowSidebar: Dispatch<SetStateAction<boolean>>;
   onSend: (
     message: Message,
     deleteCount: number,
@@ -65,6 +66,7 @@ export const Chat: FC<Props> = memo(
     loading,
     prompts,
     setRechargeVisible,
+    setShowSidebar,
     onSend,
     onUpdateConversation,
     onEditMessage,
@@ -310,6 +312,7 @@ export const Chat: FC<Props> = memo(
               conversationIsEmpty={conversation.messages.length === 0}
               model={conversation.model}
               prompts={prompts}
+              setShowSidebar={setShowSidebar}
               setLoginVisible={setLoginVisible}
               setRechargeVisible={setRechargeVisible}
               onSend={(message, plugin) => {

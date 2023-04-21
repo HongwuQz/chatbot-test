@@ -9,7 +9,8 @@ export async function msgIntercetor(
   token: string,
   model: OpenAIModel,
   setRechargeVisible: Dispatch<SetStateAction<boolean>>,
-  setLoginVisible: Dispatch<SetStateAction<boolean>>
+  setLoginVisible: Dispatch<SetStateAction<boolean>>,
+  setShowSidebar: Dispatch<SetStateAction<boolean>>,
 ) {
     // 游客状态
     if (!isLogin) {
@@ -44,6 +45,7 @@ export async function msgIntercetor(
                 const Errormessage = Msg as string
                 if (Code !== 200) {
                     message.error(Errormessage)
+                    setShowSidebar(true)
                     setLoginVisible(true)
                     return
                 }

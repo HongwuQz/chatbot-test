@@ -641,7 +641,7 @@ const Home: React.FC<HomeProps> = ({
   };
 
   const asyncSend = useCallback(async (model: OpenAIModel, currentMessage: Message) => {
-    const interceptor = await msgIntercetor(!token, token, model, setRechargeVisible, setLoginVisible)
+    const interceptor = await msgIntercetor(!token, token, model, setRechargeVisible, setLoginVisible, setShowSidebar)
     if(!interceptor) {
       return
     }
@@ -765,7 +765,7 @@ const Home: React.FC<HomeProps> = ({
         <main
           className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${lightMode}`}
         >
-          <div className="fixed top-0 w-full sm:hidden">
+          <div className="fixed z-30 top-0 w-full sm:hidden">
             <Navbar
               selectedConversation={selectedConversation}
               onNewConversation={handleNewConversation}
@@ -840,6 +840,7 @@ const Home: React.FC<HomeProps> = ({
                 defaultModelId={defaultModelId}
                 setLoginVisible={setLoginVisible}
                 setRechargeVisible={setRechargeVisible}
+                setShowSidebar={setShowSidebar}
                 // modelError={modelError}
                 models={Object.values(OpenAIModels)}
                 loading={loading}
