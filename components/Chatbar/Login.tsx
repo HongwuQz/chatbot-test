@@ -9,8 +9,8 @@ import { getUserBalance } from '@/utils/apis/balance';
 interface LoginProps {
   setToken: Dispatch<SetStateAction<string>>
   onLogin: {
-      login: (form: LoginData) => Promise<any>;
-      register: (form: LoginData) => Promise<any>;
+    login: (form: LoginData) => Promise<any>;
+    register: (form: LoginData) => Promise<any>;
   }
   setBalance: Dispatch<SetStateAction<BalanceResponse>>;
   setShowSidebar: Dispatch<SetStateAction<boolean>>;

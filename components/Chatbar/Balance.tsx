@@ -1,9 +1,11 @@
 import { Dispatch, FC, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
-import { IconRefresh } from "@tabler/icons-react";
+import { IconRefresh, IconCopy, IconCopyOff } from "@tabler/icons-react";
 import { RechargeModal, RechargeOption } from "./RechargeModal";
 import { BalanceResponse } from "@/types/balance";
 import { CHATBOT_BASE_URL } from "@/utils/app/const";
 import { message } from "antd";
+import copy from "copy-to-clipboard";
+import { TextCopy } from "../TextCopy";
 
 interface Props {
   token: string
@@ -18,6 +20,7 @@ export const Balance: FC<Props> = ({ token, balance, rechargeVisible, setBalance
   const [rechargeOptions, setRechargeOptions] = useState<RechargeOption[]>([])
   const [showDetail, setShowDetail] = useState(true)
   const [inviteCode, setInviteCode] = useState('')
+  const [copied, setCopied] = useState<boolean>(false)
   const handleRefreshBalance = async () => {
     const balanceRes = await fetch(`${CHATBOT_BASE_URL}/user/Balance`, {
         method: 'POST',
@@ -61,6 +64,11 @@ export const Balance: FC<Props> = ({ token, balance, rechargeVisible, setBalance
     }
   }
 
+  const onInviteCodeClick = useCallback(() => {
+    copy(inviteCode)
+    setCopied(true)
+  }, [inviteCode])
+
   useEffect(() => {
     hanldeChargeList()
     handleRefreshBalance()
@@ -91,7 +99,7 @@ export const Balance: FC<Props> = ({ token, balance, rechargeVisible, setBalance
               <div>累计充值：{balance.totalCoin}</div>
               <div>累计赠送：{balance.totalCoinMore}</div>
               <div>累计使用：{balance.totalCoinUse}</div>
-              <div>专属邀请码：{inviteCode}</div>
+              <div>专属邀请码：<TextCopy text={inviteCode}>{inviteCode}</TextCopy></div>
             </div>
           )}
           <button
