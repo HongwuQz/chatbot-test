@@ -75,7 +75,7 @@ export const PromptModal: FC<Props> = ({ prompt, onClose, onUpdatePrompt }) => {
               onChange={(e) => setName(e.target.value)}
             />
 
-            <div className="mt-6 text-sm font-bold text-black dark:text-neutral-200">
+            <div className="mt-2 text-sm font-bold text-black dark:text-neutral-200">
               {t('Description')}
             </div>
             <textarea
@@ -84,10 +84,10 @@ export const PromptModal: FC<Props> = ({ prompt, onClose, onUpdatePrompt }) => {
               placeholder={t('A description for your prompt.') || ''}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              rows={3}
+              rows={2}
             />
 
-            <div className="mt-6 text-sm font-bold text-black dark:text-neutral-200">
+            <div className="mt-2 text-sm font-bold text-black dark:text-neutral-200">
               {t('Prompt')}
             </div>
             <textarea
@@ -100,7 +100,7 @@ export const PromptModal: FC<Props> = ({ prompt, onClose, onUpdatePrompt }) => {
               }
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              rows={10}
+              rows={3}
             />
 
             <button

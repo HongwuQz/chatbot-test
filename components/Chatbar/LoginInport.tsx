@@ -79,7 +79,7 @@ export const LoginInport: FC<Props> = ({ token, setToken, setBalance, setShowSid
                 className="dark:border-netural-400 inline-block max-h-[500px] transform overflow-hidden rounded-lg border border-gray-300 bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all dark:bg-[#202123] sm:my-8 sm:max-h-[600px] sm:w-full sm:max-w-lg sm:p-6 sm:align-middle"
                 role="dialog"
               >
-                <div className="mb-2 flex justify-center text-xl">登录</div>
+                <div className="mb-2 flex text-black dark:text-white justify-center text-xl">登录</div>
                 <Login setToken={setToken} onLogin={{login, register}} loginVisible={loginVisible} setLoginVisible={setLoginVisible} setBalance={setBalance} setShowSidebar={setShowSidebar} />
               </div>
             </div>

@@ -105,7 +105,7 @@ const Login: React.FC<LoginProps> = ({ setToken, onLogin, setLoginVisible, setBa
             htmlType='button'
             type='primary'
             onClick={() => setRegister(!register)}
-            className="flex justify-center items-center mt-6 w-full rounded-lg borderpx-4 py-2 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500"
+            className="flex justify-center items-center mt-6 w-full rounded-lg border px-4 py-2 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 bg-blue-600 dark:text-white hover:bg-blue-500"
         >
             {register ? '使用帐号密码登录' : '使用手机验证码注册'}
         </Button>
