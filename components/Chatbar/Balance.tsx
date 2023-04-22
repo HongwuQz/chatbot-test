@@ -17,7 +17,7 @@ export const Balance: FC<Props> = ({ token, balance, rechargeVisible, setBalance
   const isLogin = useMemo(() => !!token, [token])
   const [rechargeOptions, setRechargeOptions] = useState<RechargeOption[]>([])
   const [showDetail, setShowDetail] = useState(true)
-  const [type] = useState('1')
+  const [inviteCode, setInviteCode] = useState('')
   const handleRefreshBalance = async () => {
     const balanceRes = await fetch(`${CHATBOT_BASE_URL}/user/Balance`, {
         method: 'POST',
@@ -47,9 +47,24 @@ export const Balance: FC<Props> = ({ token, balance, rechargeVisible, setBalance
     }
   }
 
+  const getInviteCode = async () => {
+    const chargeList = await fetch(`${CHATBOT_BASE_URL}/user/InviteCode`, {
+        method: 'GET',
+        headers: {
+        'Content-Type': 'application/json',
+        Auth: token,
+        },
+    })
+    const { Code, Data } = await chargeList.json()
+    if (Code === 200) {
+      setInviteCode(Data?.inviteCode)
+    }
+  }
+
   useEffect(() => {
     hanldeChargeList()
     handleRefreshBalance()
+    getInviteCode()
   }, [token])
 
   const total = useMemo(() => {
@@ -60,7 +75,7 @@ export const Balance: FC<Props> = ({ token, balance, rechargeVisible, setBalance
   return (
     <>
       {isLogin && (
-        <div className="flex flex-col text-sm text-gray-500" style={{marginLeft:'-30%'}}>
+        <div className="flex flex-col text-sm text-gray-500">
           <div className="flex items-center" >
             <span className="text-gray-200 text-sm font-medium" onClick={() => setShowDetail(!showDetail)}>余额：</span>
             <span className="ml-1 text-sm text-lg font-bold text-gray-200">
@@ -76,6 +91,7 @@ export const Balance: FC<Props> = ({ token, balance, rechargeVisible, setBalance
               <div>累计充值：{balance.totalCoin}</div>
               <div>累计赠送：{balance.totalCoinMore}</div>
               <div>累计使用：{balance.totalCoinUse}</div>
+              <div>专属邀请码：{inviteCode}</div>
             </div>
           )}
           <button

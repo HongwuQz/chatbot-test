@@ -16,13 +16,15 @@ interface LoginProps {
   setShowSidebar: Dispatch<SetStateAction<boolean>>;
   loginVisible: boolean;
   setLoginVisible: Dispatch<SetStateAction<boolean>>;
+  register: boolean;
+  setRegister: Dispatch<SetStateAction<boolean>>;
 }
 
-const Login: React.FC<LoginProps> = ({ setToken, onLogin, setLoginVisible, setBalance, setShowSidebar }) => {
+const Login: React.FC<LoginProps> = ({ setToken, onLogin, register, setRegister, setLoginVisible, setBalance, setShowSidebar }) => {
   const [phone, setPhone] = useState('');
   const [pass, setPass] = useState('');
   const [code, setCode] = useState('')
-  const [register, setRegister] = useState(false)
+  const [inviteCode, setInviteCode] = useState<string>('')
 
   const TInput = useMemo(() => register ? SMSCaptcha : Input, [register]) 
 
@@ -30,8 +32,8 @@ const Login: React.FC<LoginProps> = ({ setToken, onLogin, setLoginVisible, setBa
     if (!/^1[3-9]\d{9}$/.test(phone)) {
         message.error('请输入正确的手机号码');
         return;
-      }
-   onLogin[register ? 'register' : 'login']({ phone, pass, ...(register && { code }) }).then(res => {
+    }
+   onLogin[register ? 'register' : 'login']({ phone, pass, ...(register && { code, inviteCode }) }).then(res => {
        if (res.Code === 200) {
         sessionStorage.setItem('TOKEN', res?.Data?.token)
         setToken(res?.Data?.token)
@@ -51,14 +53,12 @@ const Login: React.FC<LoginProps> = ({ setToken, onLogin, setLoginVisible, setBa
 
   return (
     <Form onFinish={onFinish} onKeyDown={(event) => event.key === 'Enter' && onFinish()}>
-        <Form.Item
-            name="phone"
-        >
-            <div className='text-sm font-bold text-black dark:text-neutral-200'>
+        <Form.Item name="phone">
+            <div className='text-sm font-bold text-black dark:!text-neutral-200'>
                 手机号
             </div>
             <TInput
-                className='mt-2 w-full rounded-lg border border-neutral-500 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100'
+                className='mt-2 w-full rounded-lg border border-neutral-500 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:!text-neutral-100'
                 type="text"
                 size='large'
                 value={phone}
@@ -67,9 +67,7 @@ const Login: React.FC<LoginProps> = ({ setToken, onLogin, setLoginVisible, setBa
             />
             
         </Form.Item>
-        {register && <Form.Item
-            name="code"
-        >
+        {register && <Form.Item name="code">
             <div className='text-sm font-bold text-black dark:text-neutral-200'>
                 验证码
             </div>
@@ -80,11 +78,9 @@ const Login: React.FC<LoginProps> = ({ setToken, onLogin, setLoginVisible, setBa
                 onChange={(event) => setCode(event.target.value)}
             />
         </Form.Item>}
-        <Form.Item
-            name="pass"
-        >
+        <Form.Item name="pass">
             <div className='text-sm font-bold text-black dark:text-neutral-200'>
-                密码
+                {register ? '预设密码' : '密码'}
             </div>
             <Input
                 className='mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100'
@@ -93,6 +89,16 @@ const Login: React.FC<LoginProps> = ({ setToken, onLogin, setLoginVisible, setBa
                 onChange={(event) => setPass(event.target.value)}
             />
         </Form.Item>
+        {register && <Form.Item name="inviteCode">
+            <div className='text-sm font-bold text-black dark:text-neutral-200'>
+                邀请码
+            </div>
+            <Input
+                className='mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100'
+                value={inviteCode}
+                onChange={(event) => setInviteCode(event.target.value)}
+            />
+        </Form.Item>}
         <Form.Item>
             <Button
                 htmlType='submit'
